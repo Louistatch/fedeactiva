@@ -62,7 +62,15 @@ export class FederationService {
 
   async remove(id: string): Promise<void> {
     const federation = await this.findOne(id);
-    await this.federationRepo.remove(federation);
+    // Soft delete instead of hard delete
+    await this.federationRepo.softRemove(federation);
+    this.logger.log(`Federation ${id} soft deleted`);
+  }
+
+  async restore(id: string): Promise<Federation> {
+    await this.federationRepo.restore(id);
+    this.logger.log(`Federation ${id} restored`);
+    return this.findOne(id);
   }
 
   async regenerateApiKey(id: string): Promise<Federation> {

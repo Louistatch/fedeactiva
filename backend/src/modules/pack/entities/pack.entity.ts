@@ -1,5 +1,5 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,
+  Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, DeleteDateColumn,
   ManyToOne, JoinColumn, OneToMany,
 } from 'typeorm';
 import { Federation } from '../../federation/entities/federation.entity';
@@ -81,4 +81,7 @@ export class Pack {
 
   @Column({ name: 'updated_at' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: Date;
 }

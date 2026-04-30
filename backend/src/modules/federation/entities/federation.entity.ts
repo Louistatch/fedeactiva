@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
 import { Culture } from '../../culture/entities/culture.entity';
@@ -54,6 +55,9 @@ export class Federation {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: Date;
 
   @OneToMany(() => Culture, (culture) => culture.federation)
   cultures: Culture[];

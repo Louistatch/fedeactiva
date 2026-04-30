@@ -2,7 +2,7 @@ import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { FederationModule } from './modules/federation/federation.module';
 import { CultureModule } from './modules/culture/culture.module';
@@ -17,6 +17,7 @@ import { StorageModule } from './modules/storage/storage.module';
 import { CommonModule } from './modules/common/common.module';
 import { TenantMiddleware } from './modules/common/middlewares/tenant.middleware';
 import { AuditModule } from './modules/common/audit/audit.module';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -62,6 +63,10 @@ import { AuditModule } from './modules/common/audit/audit.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })

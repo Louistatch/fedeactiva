@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { createLogger } from './config/logger.config';
 import helmet from 'helmet';
 
 async function bootstrap() {
@@ -24,10 +25,15 @@ async function bootstrap() {
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Federation-Slug'],
     },
+    logger: createLogger(),
   });
 
   // Sécurité HTTP
   app.use(helmet());
+
+  // Global exception filter
+  const { AllExceptionsFilter } = await import('./common/filters/http-exception.filter');
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // Validation des DTOs
   app.useGlobalPipes(

@@ -1,5 +1,6 @@
 import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -11,12 +12,14 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 tentatives par minute
   @ApiOperation({ summary: 'Connexion unifiée (Super-Admin, Admin-Fédération, Producteur)' })
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
   @Post('register')
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 inscriptions par minute
   @ApiOperation({ summary: 'Inscription Producteur' })
   async register(@Body() dto: RegisterDto) {
     return this.authService.registerProducteur(
@@ -26,12 +29,14 @@ export class AuthController {
   }
 
   @Post('login-sa')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Connexion Super-Admin (legacy)' })
   async loginSuperAdmin(@Body() dto: LoginDto) {
     return this.authService.loginSuperAdmin(dto);
   }
 
   @Post('login-fed/:slug')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Connexion Admin-Fédération (legacy)' })
   async loginAdminFederation(
     @Body() dto: LoginDto,
@@ -42,6 +47,7 @@ export class AuthController {
   }
 
   @Post('login-producteur/:federationId')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Connexion Producteur (legacy)' })
   async loginProducteur(
     @Body() dto: LoginDto,
@@ -51,6 +57,7 @@ export class AuthController {
   }
 
   @Post('register-producteur/:federationId')
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @ApiOperation({ summary: 'Inscription Producteur (legacy)' })
   async registerProducteur(@Body() dto: RegisterDto) {
     return this.authService.registerProducteur(

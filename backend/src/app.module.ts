@@ -1,6 +1,8 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { FederationModule } from './modules/federation/federation.module';
 import { CultureModule } from './modules/culture/culture.module';
@@ -22,6 +24,10 @@ import { AuditModule } from './modules/common/audit/audit.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ThrottlerModule.forRoot([{
+      ttl: parseInt(process.env.THROTTLE_TTL || '60') * 1000, // 60 secondes
+      limit: parseInt(process.env.THROTTLE_LIMIT || '10'), // 10 requêtes max
+    }]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
@@ -51,6 +57,12 @@ import { AuditModule } from './modules/common/audit/audit.module';
     NotificationModule,
     StorageModule,
     AuditModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {

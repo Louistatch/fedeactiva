@@ -85,13 +85,21 @@ export class PackService {
   }
 
   async decrementStock(id: string, quantity: number = 1): Promise<void> {
-    await this.packRepo
+    const result = await this.packRepo
       .createQueryBuilder()
       .update()
       .set({ stockDisponible: () => `stock_disponible - ${quantity}` })
       .where('id = :id', { id })
       .andWhere('stock_disponible >= :qty', { qty: quantity })
       .execute();
+
+    if (result.affected === 0) {
+      const pack = await this.packRepo.findOne({ where: { id } });
+      if (!pack) {
+        throw new NotFoundException(`Pack ${id} non trouvé`);
+      }
+      throw new Error(`Stock insuffisant. Disponible: ${pack.stockDisponible}, Demandé: ${quantity}`);
+    }
   }
 
   async getStats(federationId: string): Promise<any> {

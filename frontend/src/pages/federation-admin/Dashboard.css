@@ -1,0 +1,142 @@
+.federation-dashboard .dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.federation-dashboard .federation-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.federation-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: white;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.federation-dashboard .header-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.quick-actions h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1.25rem 0;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.action-card:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.action-card:hover .action-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.action-card span {
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Client Info in Orders Table */
+.client-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-name {
+  font-weight: 500;
+  color: #374151;
+}
+
+.client-email {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .federation-dashboard .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .federation-dashboard .header-actions {
+    width: 100%;
+  }
+
+  .federation-dashboard .header-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .federation-dashboard .federation-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,141 @@
+═══════════════════════════════════════════════════════════════
+  VARIABLES D'ENVIRONNEMENT POUR LE FRONTEND SUR VERCEL
+═══════════════════════════════════════════════════════════════
+
+📋 COPIEZ ET COLLEZ CES VARIABLES UNE PAR UNE DANS VERCEL
+
+⚠️ IMPORTANT: Remplacez "VOTRE-BACKEND-URL" par l'URL réelle de votre backend!
+
+
+─────────────────────────────────────────────────────────────
+Variable 1: URL de l'API Backend
+─────────────────────────────────────────────────────────────
+Name:
+VITE_API_URL
+
+Value:
+https://VOTRE-BACKEND-URL.vercel.app/api
+
+⚠️ Exemple: https://fedeactiva-backend-abc123.vercel.app/api
+⚠️ N'oubliez pas le "/api" à la fin!
+
+
+─────────────────────────────────────────────────────────────
+Variable 2: Nom de l'Application
+─────────────────────────────────────────────────────────────
+Name:
+VITE_APP_NAME
+
+Value:
+FedeActiva
+
+
+─────────────────────────────────────────────────────────────
+Variable 3: URL Supabase
+─────────────────────────────────────────────────────────────
+Name:
+VITE_SUPABASE_URL
+
+Value:
+https://hpcgbpgqivachzawygld.supabase.co
+
+
+─────────────────────────────────────────────────────────────
+Variable 4: Clé Publique Supabase (Anon Key)
+─────────────────────────────────────────────────────────────
+Name:
+VITE_SUPABASE_ANON_KEY
+
+Value:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwY2dicGdxaXZhY2h6YXd5Z2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxODI3NzAsImV4cCI6MjA2MTc1ODc3MH0.sb_publishable_8B8pSvWBdixVjMME8P6TOw_jWZwL0iysb
+
+
+─────────────────────────────────────────────────────────────
+Variable 5: Clé Publique FedaPay (Optionnel)
+─────────────────────────────────────────────────────────────
+Name:
+VITE_FEDAPAY_PUBLIC_KEY
+
+Value:
+your_fedapay_public_key_here
+
+⚠️ Vous pouvez laisser cette valeur par défaut pour l'instant
+
+
+─────────────────────────────────────────────────────────────
+Variable 6: Clé Publique CinetPay (Optionnel)
+─────────────────────────────────────────────────────────────
+Name:
+VITE_CINETPAY_PUBLIC_KEY
+
+Value:
+your_cinetpay_public_key_here
+
+⚠️ Vous pouvez laisser cette valeur par défaut pour l'instant
+
+
+─────────────────────────────────────────────────────────────
+Variable 7: Activer les Analytics
+─────────────────────────────────────────────────────────────
+Name:
+VITE_ENABLE_ANALYTICS
+
+Value:
+false
+
+
+─────────────────────────────────────────────────────────────
+Variable 8: Activer le Rapport d'Erreurs
+─────────────────────────────────────────────────────────────
+Name:
+VITE_ENABLE_ERROR_REPORTING
+
+Value:
+true
+
+
+─────────────────────────────────────────────────────────────
+Variable 9: Version du Widget
+─────────────────────────────────────────────────────────────
+Name:
+VITE_WIDGET_VERSION
+
+Value:
+2.0.0
+
+
+═══════════════════════════════════════════════════════════════
+  RÉSUMÉ - FORMAT COPIER-COLLER RAPIDE
+═══════════════════════════════════════════════════════════════
+
+VITE_API_URL=https://VOTRE-BACKEND-URL.vercel.app/api
+VITE_APP_NAME=FedeActiva
+VITE_SUPABASE_URL=https://hpcgbpgqivachzawygld.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwY2dicGdxaXZhY2h6YXd5Z2xkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxODI3NzAsImV4cCI6MjA2MTc1ODc3MH0.sb_publishable_8B8pSvWBdixVjMME8P6TOw_jWZwL0iysb
+VITE_FEDAPAY_PUBLIC_KEY=your_fedapay_public_key_here
+VITE_CINETPAY_PUBLIC_KEY=your_cinetpay_public_key_here
+VITE_ENABLE_ANALYTICS=false
+VITE_ENABLE_ERROR_REPORTING=true
+VITE_WIDGET_VERSION=2.0.0
+
+
+═══════════════════════════════════════════════════════════════
+  INSTRUCTIONS
+═══════════════════════════════════════════════════════════════
+
+1. Allez sur Vercel: https://vercel.com/
+2. Créez un nouveau projet
+3. Importez le repository: Louistatch/fedeactiva
+4. Configurez:
+   - Project Name: fedeactiva-frontend
+   - Framework Preset: Vite
+   - Root Directory: frontend (IMPORTANT!)
+   
+5. Cliquez sur "Environment Variables"
+6. Ajoutez chaque variable ci-dessus une par une
+7. Cliquez sur "Deploy"
+
+⚠️ N'OUBLIEZ PAS: Remplacez "VOTRE-BACKEND-URL" dans VITE_API_URL
+   par l'URL réelle de votre backend déployé!
+
+═══════════════════════════════════════════════════════════════

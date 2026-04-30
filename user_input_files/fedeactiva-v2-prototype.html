@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FedeActiva V2 – Pack Documentaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────── */
+:root {
+  --ink:       #0f1e14;
+  --forest:    #1c4a2e;
+  --verdant:   #2d7a4f;
+  --sage:      #52a872;
+  --mint:      #8fd4a8;
+  --foam:      #d4edd9;
+  --parchment: #f7f3ec;
+  --cream:     #faf8f4;
+  --gold:      #d4932a;
+  --amber:     #e8a020;
+  --straw:     #f5d07a;
+  --papaya:    #fff3d4;
+  --rust:      #c0392b;
+  --blush:     #fde8e6;
+  --slate:     #374151;
+  --mist:      #6b7280;
+  --fog:       #9ca3af;
+  --pale:      #e5e7eb;
+  --white:     #ffffff;
+  --r:         14px;
+  --r-lg:      20px;
+  --sh:        0 2px 12px rgba(15,30,20,.08);
+  --sh-lg:     0 8px 40px rgba(15,30,20,.14);
+  --sh-xl:     0 20px 60px rgba(15,30,20,.20);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── TOP NAV ──────────────────────────────── */
+.topnav {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  height: 54px;
+  background: var(--ink);
+  display: flex; align-items: stretch;
+  box-shadow: 0 1px 20px rgba(0,0,0,.35);
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 24px;
+  border-right: 1px solid rgba(255,255,255,.08);
+  cursor: default;
+}
+.brand-mark {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--sage), var(--verdant));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; color: white;
+}
+.brand-name {
+  font-size: 16px; font-weight: 800; color: white;
+  letter-spacing: -0.4px;
+}
+.brand-name em { color: var(--amber); font-style: normal; }
+
+.nav-pills { display: flex; align-items: center; flex: 1; padding: 0 8px; gap: 2px; }
+.npill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; color: rgba(255,255,255,.45);
+  cursor: pointer; transition: all .18s; user-select: none;
+  border: 1px solid transparent;
+}
+.npill:hover { color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); }
+.npill.active { color: var(--amber); background: rgba(212,147,42,.1); border-color: rgba(212,147,42,.25); }
+.npill .pill-ico { font-size: 15px; }
+.npill .pill-badge {
+  font-size: 9px; font-weight: 800; padding: 1px 5px;
+  border-radius: 8px; background: var(--amber); color: var(--ink);
+  letter-spacing: .3px;
+}
+.nav-version {
+  display: flex; align-items: center; padding: 0 20px;
+  font-size: 11px; color: rgba(255,255,255,.2);
+  font-family: 'JetBrains Mono', monospace;
+  border-left: 1px solid rgba(255,255,255,.08);
+}
+
+/* ─── VIEWS ────────────────────────────────── */
+.view { display: none; padding-top: 54px; min-height: 100vh; }
+.view.active { display: block; }
+
+/* ════════════════════════════════════════════
+   SUPER-ADMIN
+════════════════════════════════════════════ */
+.sa-shell {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: calc(100vh - 54px);
+}
+.sa-rail {
+  background: var(--forest);
+  padding: 20px 0 20px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 54px;
+  height: calc(100vh - 54px);
+  overflow-y: auto;
+}
+.rail-profile {
+  padding: 0 18px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  margin-bottom: 12px;
+}
+.rail-profile .rp-role {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: rgba(255,255,255,.25); margin-bottom: 8px;
+}
+.rail-profile .rp-name {
+  display: flex; align-items: center; gap: 10px;
+}
+.ava {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; flex-shrink: 0;
+  background: var(--amber); color: var(--ink);
+}
+.ava.sm { width: 28px; height: 28px; font-size: 11px; }
+.rp-info .n { font-size: 14px; font-weight: 700; color: white; }
+.rp-info .s { font-size: 11px; color: rgba(255,255,255,.35); }
+
+.rail-section {
+  padding: 8px 18px 4px;
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: rgba(255,255,255,.2);
+  margin-top: 12px;
+}
+.rail-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; cursor: pointer;
+  font-size: 13.5px; font-weight: 500;
+  color: rgba(255,255,255,.5);
+  border-left: 2px solid transparent;
+  transition: all .18s;
+  user-select: none;
+}
+.rail-link:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.05); }
+.rail-link.active { color: var(--mint); border-left-color: var(--sage); background: rgba(82,168,114,.1); }
+.rail-link .ri { font-size: 16px; width: 20px; text-align: center; }
+.rail-link .rb {
+  margin-left: auto; font-size: 9px; font-weight: 800;
+  padding: 2px 6px; border-radius: 6px;
+  background: var(--rust); color: white;
+}
+.rail-link .rb.gold { background: var(--gold); color: var(--ink); }
+
+.sa-content { background: var(--parchment); padding: 28px 32px; overflow-y: auto; }
+
+/* ─── Page header ─── */
+.pg-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 26px; gap: 16px;
+}
+.pg-head-left h1 {
+  font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1.1;
+  letter-spacing: -.5px;
+}
+.pg-head-left p { font-size: 14px; color: var(--mist); margin-top: 4px; }
+.pg-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+/* ─── Stat cards ─── */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+.kpi {
+  background: white; border-radius: var(--r);
+  padding: 20px 22px; box-shadow: var(--sh);
+  position: relative; overflow: hidden;
+  transition: box-shadow .2s;
+}
+.kpi:hover { box-shadow: var(--sh-lg); }
+.kpi::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; right: 0; height: 3px;
+}
+.kpi.g::after { background: linear-gradient(90deg, var(--verdant), var(--sage)); }
+.kpi.a::after { background: linear-gradient(90deg, var(--gold), var(--amber)); }
+.kpi.b::after { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+.kpi.r::after { background: linear-gradient(90deg, var(--rust), #e57373); }
+.kpi-label { font-size: 11.5px; font-weight: 600; color: var(--mist); text-transform: uppercase; letter-spacing: .6px; }
+.kpi-val { font-size: 32px; font-weight: 800; color: var(--ink); margin: 6px 0 4px; line-height: 1; letter-spacing: -1px; }
+.kpi-trend { font-size: 12px; font-weight: 500; }
+.kpi-trend.up { color: var(--verdant); }
+.kpi-trend.dn { color: var(--rust); }
+.kpi-ico { position: absolute; top: 16px; right: 16px; font-size: 24px; opacity: .15; }
+
+/* ─── Grid layouts ─── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.g31 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
+.g13 { display: grid; grid-template-columns: 1fr 2fr; gap: 18px; margin-bottom: 18px; }
+
+/* ─── Panel ─── */
+.panel {
+  background: white; border-radius: var(--r);
+  box-shadow: var(--sh); overflow: hidden;
+  transition: box-shadow .2s;
+}
+.panel:hover { box-shadow: var(--sh-lg); }
+.ph {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--parchment);
+}
+.ph h3 { font-size: 15px; font-weight: 700; color: var(--ink); }
+.ph .ph-sub { font-size: 12px; color: var(--fog); }
+.pb { padding: 20px; }
+
+/* ─── Table ─── */
+.dt { width: 100%; border-collapse: collapse; }
+.dt th {
+  padding: 10px 14px; text-align: left;
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .7px; color: var(--fog);
+  background: var(--cream); border-bottom: 1px solid var(--pale);
+}
+.dt td {
+  padding: 12px 14px; font-size: 13px;
+  border-bottom: 1px solid #f5f1ea;
+  vertical-align: middle;
+}
+.dt tr:last-child td { border-bottom: none; }
+.dt tr:hover td { background: var(--cream); }
+
+/* ─── Badge ─── */
+.bdg {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.bdg::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+.bdg.ok { background: var(--foam); color: var(--verdant); }
+.bdg.ok::before { background: var(--sage); }
+.bdg.wait { background: var(--papaya); color: var(--gold); }
+.bdg.wait::before { background: var(--amber); }
+.bdg.off { background: var(--pale); color: var(--mist); }
+.bdg.off::before { background: var(--fog); }
+.bdg.err { background: var(--blush); color: var(--rust); }
+.bdg.err::before { background: var(--rust); }
+
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px; border: none;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .18s; line-height: 1;
+}
+.btn-ink { background: var(--ink); color: white; }
+.btn-ink:hover { background: var(--forest); }
+.btn-forest { background: var(--forest); color: white; }
+.btn-forest:hover { background: var(--ink); }
+.btn-verdant { background: var(--verdant); color: white; }
+.btn-verdant:hover { background: var(--forest); }
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { background: var(--amber); }
+.btn-ghost { background: transparent; color: var(--verdant); border: 1.5px solid var(--verdant); }
+.btn-ghost:hover { background: var(--verdant); color: white; }
+.btn-pale { background: var(--pale); color: var(--slate); }
+.btn-pale:hover { background: var(--fog); color: white; }
+.btn-sm { padding: 5px 12px; font-size: 11px; border-radius: 7px; }
+.btn-xs { padding: 4px 10px; font-size: 10px; border-radius: 6px; }
+
+/* ─── Fed logo ─── */
+.fed-ico {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 12px; color: white; flex-shrink: 0;
+}
+.fi-green { background: linear-gradient(135deg, var(--forest), var(--sage)); }
+.fi-amber { background: linear-gradient(135deg, #c65d0a, #f4a932); }
+.fi-blue { background: linear-gradient(135deg, #1a4480, #5a9fd4); }
+.fi-slate { background: linear-gradient(135deg, #374151, #9ca3af); }
+
+/* ─── Progress ─── */
+.prog-track { background: var(--pale); border-radius: 4px; height: 5px; flex: 1; }
+.prog-fill { height: 5px; border-radius: 4px; background: var(--sage); }
+
+/* ─── Log entries ─── */
+.log-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--parchment); align-items: flex-start; }
+.log-item:last-child { border-bottom: none; }
+.log-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.log-dot.g { background: var(--sage); }
+.log-dot.a { background: var(--amber); }
+.log-dot.r { background: var(--rust); }
+.log-dot.b { background: #3b82f6; }
+.log-text { font-size: 13px; line-height: 1.45; color: var(--slate); flex: 1; }
+.log-time { font-size: 10.5px; color: var(--fog); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+/* ─── Chart ─── */
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 110px; padding: 0 2px; }
+.bar {
+  flex: 1; border-radius: 6px 6px 0 0;
+  background: var(--sage); cursor: pointer;
+  transition: opacity .2s; position: relative; min-width: 0;
+}
+.bar:hover { opacity: .75; }
+.bar.dim { background: var(--foam); }
+.bar.hi { background: var(--amber); }
+.bar-lbls { display: flex; gap: 6px; padding: 6px 2px 0; }
+.bar-lbls span { flex: 1; text-align: center; font-size: 9.5px; color: var(--fog); min-width: 0; overflow: hidden; }
+
+/* ─── Pack card (new concept) ─── */
+.pack-card {
+  background: white; border-radius: var(--r-lg);
+  border: 1.5px solid var(--pale);
+  overflow: hidden; transition: all .2s;
+  cursor: pointer;
+}
+.pack-card:hover { box-shadow: var(--sh-lg); border-color: var(--sage); transform: translateY(-2px); }
+.pack-header {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--verdant) 100%);
+  position: relative;
+}
+.pack-header::after {
+  content: '📦';
+  position: absolute; right: 14px; top: 14px;
+  font-size: 22px; opacity: .35;
+}
+.pack-culture { font-size: 22px; margin-bottom: 4px; }
+.pack-name { font-size: 15px; font-weight: 800; color: white; line-height: 1.1; }
+.pack-zone { font-size: 12px; color: rgba(255,255,255,.55); margin-top: 2px; }
+.pack-price { font-size: 20px; font-weight: 800; color: var(--straw); margin-top: 8px; }
+.pack-body { padding: 14px 18px; }
+.pack-files { display: flex; flex-direction: column; gap: 7px; }
+.pack-file {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 12px; font-weight: 600;
+}
+.pack-file.xlsx { background: #e8f5e9; color: #2e7d32; }
+.pack-file.docx { background: #e3f2fd; color: #1565c0; }
+.pack-file .pf-icon { font-size: 18px; }
+.pack-file .pf-name { flex: 1; }
+.pack-file .pf-size { font-size: 10px; opacity: .6; }
+.pack-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 18px; background: var(--cream);
+  border-top: 1px solid var(--pale);
+  font-size: 11px; color: var(--fog);
+}
+
+/* ─── Doc preview panel ─── */
+.doc-preview {
+  background: white; border-radius: var(--r);
+  overflow: hidden; box-shadow: var(--sh);
+}
+.doc-toolbar {
+  background: #217346; padding: 8px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.doc-toolbar.word { background: #2b5797; }
+.doc-toolbar-name { font-size: 12px; font-weight: 600; color: white; flex: 1; }
+.doc-toolbar-actions { display: flex; gap: 6px; }
+.doc-toolbar-actions button {
+  background: rgba(255,255,255,.2); border: none; color: white;
+  font-size: 10px; padding: 3px 8px; border-radius: 4px; cursor: pointer;
+  transition: background .15s;
+}
+.doc-toolbar-actions button:hover { background: rgba(255,255,255,.35); }
+.doc-content { padding: 18px 20px; font-family: 'Lora', serif; font-size: 13px; line-height: 1.7; color: var(--ink); max-height: 240px; overflow-y: auto; }
+.doc-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--forest); }
+.doc-content .doc-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0; }
+.doc-content .doc-table th { background: #217346; color: white; padding: 5px 8px; text-align: left; }
+.doc-content .doc-table.word-table th { background: #2b5797; }
+.doc-content .doc-table td { padding: 5px 8px; border: 1px solid #ddd; }
+.doc-content .doc-table tr:nth-child(even) td { background: #f8fdf9; }
+
+/* ════════════════════════════════════════════
+   ADMIN FÉDÉRATION
+════════════════════════════════════════════ */
+.af-shell { display: grid; grid-template-columns: 230px 1fr; min-height: calc(100vh - 54px); }
+.af-rail {
+  background: #162d20;
+  padding: 0 0 20px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 54px;
+  height: calc(100vh - 54px);
+  overflow-y: auto;
+}
+.af-fed-banner {
+  padding: 16px 18px 14px;
+  background: linear-gradient(135deg, var(--forest), var(--verdant));
+  margin-bottom: 12px;
+}
+.af-fed-banner .fb-name {
+  font-size: 16px; font-weight: 800; color: white; margin-top: 10px; line-height: 1.1;
+}
+.af-fed-banner .fb-url {
+  font-size: 10px; color: rgba(255,255,255,.4);
+  font-family: 'JetBrains Mono', monospace; margin-top: 3px;
+}
+.af-content { background: var(--parchment); padding: 24px 28px; }
+
+/* ─── Stepper ─── */
+.stepper { display: flex; align-items: center; margin-bottom: 28px; }
+.step-node { display: flex; align-items: center; gap: 10px; }
+.step-ball {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px;
+  background: var(--pale); color: var(--fog);
+  transition: all .3s;
+}
+.step-node.done .step-ball { background: var(--sage); color: white; }
+.step-node.active .step-ball {
+  background: var(--forest); color: white;
+  box-shadow: 0 0 0 4px rgba(45,122,79,.2);
+}
+.step-label { font-size: 13px; font-weight: 600; color: var(--fog); }
+.step-node.active .step-label { color: var(--ink); }
+.step-node.done .step-label { color: var(--verdant); }
+.step-wire { flex: 1; height: 2px; background: var(--pale); margin: 0 12px; min-width: 16px; }
+.step-wire.done { background: var(--sage); }
+
+/* ─── Form ─── */
+.fg { margin-bottom: 16px; }
+.fl { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--mist); margin-bottom: 6px; }
+.fc {
+  width: 100%; padding: 10px 13px; border-radius: 9px;
+  border: 1.5px solid var(--pale); font-family: 'Outfit', sans-serif;
+  font-size: 14px; color: var(--ink); background: white;
+  transition: border-color .18s; appearance: none;
+}
+.fc:focus { outline: none; border-color: var(--sage); }
+.fc::placeholder { color: var(--fog); }
+.fr2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fr3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+/* ─── Pack builder preview ─── */
+.pack-builder {
+  background: var(--ink); border-radius: var(--r-lg);
+  padding: 20px; color: white; position: relative; overflow: hidden;
+}
+.pack-builder::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: rgba(82,168,114,.1);
+}
+.pack-builder::after {
+  content: '';
+  position: absolute; bottom: -30px; left: -30px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: rgba(212,147,42,.08);
+}
+.pb-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,.35); margin-bottom: 12px; }
+.pb-culture-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.pb-ico { font-size: 32px; }
+.pb-culture { font-size: 20px; font-weight: 800; color: white; }
+.pb-zone { font-size: 13px; color: rgba(255,255,255,.5); }
+.pb-price-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px; padding: 6px 14px;
+  background: rgba(212,147,42,.2); border: 1px solid rgba(212,147,42,.4);
+  border-radius: 20px; color: var(--straw);
+  font-size: 16px; font-weight: 800;
+}
+.pb-files { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.pb-file {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 9px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+}
+.pb-file .pf-label { font-size: 12px; color: rgba(255,255,255,.8); flex: 1; }
+.pb-file .pf-type { font-size: 10px; padding: 2px 7px; border-radius: 5px; font-weight: 700; }
+.pb-file .xlsx-tag { background: #2e7d32; color: white; }
+.pb-file .docx-tag { background: #1565c0; color: white; }
+.pb-summary {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  display: flex; justify-content: space-between;
+}
+.pb-summary span { font-size: 11px; color: rgba(255,255,255,.35); }
+.pb-summary strong { font-size: 13px; color: rgba(255,255,255,.8); }
+
+/* ─── Content template selector ─── */
+.template-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tpl-card {
+  border: 1.5px solid var(--pale); border-radius: 10px;
+  padding: 14px; cursor: pointer; transition: all .18s;
+  background: white;
+}
+.tpl-card:hover { border-color: var(--sage); background: var(--foam); }
+.tpl-card.sel { border-color: var(--verdant); background: var(--foam); }
+.tpl-card.sel::after { content: '✓'; float: right; color: var(--verdant); font-weight: 800; }
+.tpl-ico { font-size: 22px; margin-bottom: 6px; }
+.tpl-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.tpl-desc { font-size: 11px; color: var(--mist); margin-top: 3px; line-height: 1.4; }
+
+/* ─── Stats row ─── */
+.sr3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+.sc {
+  background: white; border-radius: 11px; padding: 15px 18px;
+  box-shadow: var(--sh);
+}
+.sc .sl { font-size: 11px; font-weight: 600; color: var(--fog); text-transform: uppercase; letter-spacing: .5px; }
+.sc .sv { font-size: 26px; font-weight: 800; color: var(--ink); margin: 4px 0 2px; letter-spacing: -.5px; }
+.sc .ss { font-size: 12px; color: var(--mist); }
+
+/* ─── Pack grid ─── */
+.pack-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+
+/* ════════════════════════════════════════════
+   PORTAIL PUBLIC (WIDGET)
+════════════════════════════════════════════ */
+.pub-wrap { min-height: calc(100vh - 54px); background: #eae6de; }
+
+.host-bar {
+  background: white;
+  padding: 14px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--pale);
+  box-shadow: 0 1px 8px rgba(0,0,0,.06);
+}
+.host-logo-txt { font-size: 18px; font-weight: 900; color: var(--forest); }
+.host-nav { display: flex; gap: 24px; }
+.host-nav a { font-size: 13px; color: var(--mist); text-decoration: none; cursor: pointer; }
+.host-hint {
+  font-size: 10px; color: var(--fog); background: #f0f0f0;
+  padding: 3px 10px; border-radius: 20px; border: 1px dashed #ccc;
+}
+
+.host-hero {
+  padding: 24px 32px 16px;
+  background: white; border-bottom: 1px solid var(--pale);
+}
+.host-hero h2 { font-family: 'Lora', serif; font-size: 22px; color: var(--forest); margin-bottom: 6px; }
+.host-hero p { font-size: 14px; color: var(--mist); max-width: 520px; }
+
+/* Widget mount */
+.widget-mount {
+  margin: 20px 32px 32px;
+  border-radius: 18px; overflow: hidden;
+  box-shadow: var(--sh-xl);
+  border: 1px solid rgba(0,0,0,.06);
+}
+.w-head {
+  background: linear-gradient(135deg, var(--forest) 0%, var(--verdant) 50%, var(--sage) 100%);
+  padding: 20px 24px;
+  display: flex; align-items: center; gap: 16px;
+  position: relative; overflow: hidden;
+}
+.w-head::before {
+  content: '';
+  position: absolute; right: -20px; top: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+}
+.wh-fed-seal {
+  width: 50px; height: 50px; border-radius: 12px;
+  background: rgba(255,255,255,.15); border: 2px solid rgba(255,255,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900; color: white; flex-shrink: 0;
+  letter-spacing: .5px;
+}
+.wh-info h2 { font-size: 18px; font-weight: 800; color: white; line-height: 1.1; }
+.wh-info p { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 3px; }
+.wh-stats { margin-left: auto; text-align: right; }
+.wh-num { font-size: 26px; font-weight: 900; color: var(--straw); line-height: 1; letter-spacing: -1px; }
+.wh-lab { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+/* Widget inner tabs */
+.w-tabs {
+  background: white; display: flex;
+  border-bottom: 2px solid var(--parchment);
+}
+.w-tab {
+  flex: 1; padding: 13px 16px; text-align: center;
+  font-size: 13px; font-weight: 700;
+  color: var(--fog); cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: all .18s;
+}
+.w-tab.active { color: var(--verdant); border-bottom-color: var(--verdant); }
+.w-tab:hover:not(.active) { color: var(--slate); }
+
+.w-body { background: white; padding: 24px; min-height: 360px; }
+
+/* Pack selection */
+.pack-sel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.pack-sel-header h3 { font-size: 16px; font-weight: 800; color: var(--ink); }
+.step-tag { font-size: 11px; color: var(--fog); background: var(--cream); padding: 3px 10px; border-radius: 20px; }
+
+/* Pack choice cards */
+.pack-choice-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 18px; }
+.pcc {
+  border: 1.5px solid var(--pale); border-radius: 12px;
+  overflow: hidden; cursor: pointer; transition: all .2s;
+  background: white; position: relative;
+}
+.pcc:hover { border-color: var(--sage); transform: translateY(-2px); box-shadow: var(--sh-lg); }
+.pcc.sel { border-color: var(--verdant); box-shadow: 0 0 0 3px rgba(45,122,79,.15); }
+.pcc-check {
+  display: none;
+  position: absolute; top: 8px; right: 8px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--verdant); color: white;
+  font-size: 10px; font-weight: 900;
+  align-items: center; justify-content: center;
+}
+.pcc.sel .pcc-check { display: flex; }
+.pcc-top {
+  padding: 14px 14px 10px;
+  background: linear-gradient(135deg, var(--forest), var(--verdant));
+}
+.pcc-ico { font-size: 24px; margin-bottom: 4px; }
+.pcc-cult { font-size: 13px; font-weight: 800; color: white; }
+.pcc-zone { font-size: 10px; color: rgba(255,255,255,.5); margin-top: 1px; }
+.pcc-price { font-size: 16px; font-weight: 900; color: var(--straw); margin-top: 6px; }
+.pcc-bot { padding: 10px 14px; }
+.pcc-files { display: flex; gap: 5px; }
+.pcc-f { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+.xlsx-f { background: #e8f5e9; color: #2e7d32; }
+.docx-f { background: #e3f2fd; color: #1565c0; }
+.pcc-avail { font-size: 10px; color: var(--fog); margin-top: 5px; }
+
+/* Checkout steps */
+.checkout-body { animation: slideUp .25s ease; }
+@keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* Pack receipt */
+.pack-receipt {
+  background: var(--cream); border-radius: 12px;
+  border: 1px solid var(--pale); padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.pr-title { font-size: 12px; font-weight: 700; color: var(--mist); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+.pr-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.pr-ico { font-size: 20px; }
+.pr-info .pn { font-size: 14px; font-weight: 700; color: var(--ink); }
+.pr-info .ps { font-size: 11px; color: var(--mist); }
+.pr-price { font-size: 18px; font-weight: 900; color: var(--verdant); margin-left: auto; }
+.pr-files { display: flex; gap: 8px; margin-top: 10px; }
+.pr-file-tag {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 7px;
+  font-size: 11px; font-weight: 700;
+}
+.pr-file-tag.xl { background: #e8f5e9; color: #2e7d32; }
+.pr-file-tag.dc { background: #e3f2fd; color: #1565c0; }
+.pr-divider { border-top: 1px solid var(--pale); margin-top: 10px; padding-top: 10px; display: flex; justify-content: space-between; }
+.pr-divider .pd-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pr-divider .pd-total { font-size: 20px; font-weight: 900; color: var(--verdant); }
+
+/* Payment methods */
+.pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.pay-opt {
+  border: 2px solid var(--pale); border-radius: 11px;
+  padding: 12px 14px; cursor: pointer; transition: all .18s;
+  display: flex; align-items: center; gap: 10px; background: white;
+}
+.pay-opt:hover { border-color: var(--mint); }
+.pay-opt.sel { border-color: var(--verdant); background: var(--foam); }
+.pay-opt .po-ico { font-size: 22px; }
+.pay-opt .po-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pay-opt .po-sub { font-size: 11px; color: var(--fog); }
+
+/* Success screen */
+.success-wrap { text-align: center; padding: 10px 0 20px; }
+.success-anim { font-size: 52px; margin-bottom: 10px; animation: bounce .6s ease; }
+@keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+.success-wrap h3 { font-size: 22px; font-weight: 900; color: var(--forest); }
+.success-wrap .sw-sub { font-size: 14px; color: var(--mist); margin-top: 6px; }
+
+/* Download cards */
+.dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+.dl-card {
+  border-radius: 12px; padding: 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; transition: all .2s;
+  position: relative;
+}
+.dl-card.xl-card { background: #f1f8e9; border: 1.5px solid #a5d6a7; }
+.dl-card.dc-card { background: #e3f2fd; border: 1.5px solid #90caf9; }
+.dl-card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+.dl-card .dc-ico { font-size: 30px; }
+.dl-card .dc-name { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.dl-card .dc-size { font-size: 11px; opacity: .6; margin-top: 2px; }
+.dl-card .dc-btn {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 10px; padding: 3px 8px; border-radius: 6px;
+  background: rgba(0,0,0,.08); color: inherit; border: none; cursor: pointer;
+  font-weight: 700;
+}
+.xl-card .dc-name { color: #2e7d32; }
+.dc-card .dc-name { color: #1565c0; }
+
+/* Espace client */
+.ec-account-item {
+  background: white; border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--sh); cursor: pointer;
+  transition: box-shadow .2s; border: 1.5px solid transparent;
+}
+.ec-account-item:hover { box-shadow: var(--sh-lg); border-color: var(--foam); }
+.ec-ai-ico {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--forest), var(--sage));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.ec-ai-info h4 { font-size: 14px; font-weight: 700; color: var(--ink); }
+.ec-ai-info p { font-size: 12px; color: var(--fog); margin-top: 2px; }
+.ec-ai-dl { margin-left: auto; display: flex; gap: 6px; }
+.dl-badge {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: 7px;
+  font-size: 10px; font-weight: 700; cursor: pointer;
+  transition: all .15s;
+}
+.dl-badge.xl { background: #e8f5e9; color: #2e7d32; }
+.dl-badge.xl:hover { background: #2e7d32; color: white; }
+.dl-badge.dc { background: #e3f2fd; color: #1565c0; }
+.dl-badge.dc:hover { background: #1565c0; color: white; }
+
+/* ─── Widget footer ─── */
+.w-foot {
+  background: var(--cream); padding: 10px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--pale);
+}
+.w-foot-left { font-size: 11px; color: var(--fog); }
+.w-foot-right { font-size: 10px; color: #bbb; }
+.w-foot-right b { color: var(--verdant); }
+
+/* ─── Modal ─── */
+.overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+}
+.overlay.open { display: flex; }
+.modal-box {
+  background: white; border-radius: 18px;
+  padding: 28px; width: 480px; max-width: 95vw;
+  box-shadow: var(--sh-xl);
+  animation: slideUp .22s ease;
+}
+.modal-box h3 { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.modal-box .mb-sub { font-size: 13px; color: var(--mist); margin-bottom: 20px; }
+.modal-foot { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed; bottom: 22px; right: 22px; z-index: 3000;
+  background: var(--ink); color: white;
+  padding: 12px 20px; border-radius: 12px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: var(--sh-xl);
+  transform: translateY(80px); opacity: 0;
+  transition: all .3s ease;
+}
+.toast.on { transform: translateY(0); opacity: 1; }
+.toast .ti { font-size: 18px; }
+
+/* ─── Doc preview modal ─── */
+.doc-preview-modal { max-width: 680px; width: 95vw; }
+
+/* ─── Info alert ─── */
+.alert-info {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--papaya); border: 1px solid var(--straw);
+  border-radius: 9px; padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.alert-info .ai-ico { font-size: 18px; flex-shrink: 0; }
+.alert-info .ai-text { font-size: 13px; color: #7a5600; line-height: 1.45; }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; background: var(--pale);
+  padding: 1px 5px; border-radius: 4px; color: var(--forest);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c9c5be; border-radius: 3px; }
+
+@media (max-width:900px) {
+  .sa-shell,.af-shell { grid-template-columns:1fr; }
+  .sa-rail,.af-rail { display:none; }
+  .kpi-row { grid-template-columns:1fr 1fr; }
+  .pack-choice-grid,.pack-grid { grid-template-columns:1fr 1fr; }
+  .g2,.g31,.g13 { grid-template-columns:1fr; }
+  .dl-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="brand">
+    <div class="brand-mark">F</div>
+    <div class="brand-name">Fede<em>Activa</em></div>
+  </div>
+  <div class="nav-pills">
+    <div class="npill active" onclick="switchView('sa',this)">
+      <span class="pill-ico">🔐</span> Super-Admin
+      <span class="pill-badge">SA</span>
+    </div>
+    <div class="npill" onclick="switchView('af',this)">
+      <span class="pill-ico">🌿</span> Admin-Fédération
+      <span class="pill-badge">AF</span>
+    </div>
+    <div class="npill" onclick="switchView('pub',this)">
+      <span class="pill-ico">🛒</span> Portail Public · Widget
+      <span class="pill-badge">WIDGET</span>
+    </div>
+  </div>
+  <div class="nav-version">v2.0 · Pack Documentaire</div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     SUPER-ADMIN VIEW
+═══════════════════════════════════════ -->
+<div id="view-sa" class="view active">
+  <div class="sa-shell">
+    <aside class="sa-rail">
+      <div class="rail-profile">
+        <div class="rp-role">Connecté en tant que</div>
+        <div class="rp-name">
+          <div class="ava">SA</div>
+          <div class="rp-info">
+            <div class="n">Super Admin</div>
+            <div class="s">Accès plateforme global</div>
+          </div>
+        </div>
+      </div>
+      <div class="rail-section">Tableau de bord</div>
+      <div class="rail-link active" onclick="saPage('dashboard',this)"><span class="ri">📊</span>Vue globale</div>
+      <div class="rail-link" onclick="saPage('packs-sa',this)"><span class="ri">📦</span>Packs documentaires</div>
+      <div class="rail-link" onclick="saPage('previews',this)"><span class="ri">👁️</span>Prévisualisation docs</div>
+      <div class="rail-section">Gestion</div>
+      <div class="rail-link" onclick="saPage('feds',this)"><span class="ri">🏛️</span>Fédérations</div>
+      <div class="rail-link" onclick="saPage('cultures-sa',this)"><span class="ri">🌱</span>Cultures & itinéraires</div>
+      <div class="rail-link" onclick="saPage('geo',this)"><span class="ri">🗺️</span>Géographie</div>
+      <div class="rail-link" onclick="saPage('commissions',this)"><span class="ri">💰</span>Commissions</div>
+      <div class="rail-section">Système</div>
+      <div class="rail-link" onclick="saPage('webhooks',this)"><span class="ri">🔗</span>Webhooks IPN <span class="rb">2</span></div>
+      <div class="rail-link" onclick="saPage('storage',this)"><span class="ri">💾</span>Stockage fichiers</div>
+      <div class="rail-link" onclick="saPage('logs',this)"><span class="ri">📋</span>Audit logs</div>
+      <div style="flex:1"></div>
+      <div class="rail-link" onclick="saPage('settings-sa',this)"><span class="ri">⚙️</span>Paramètres</div>
+    </aside>
+
+    <main class="sa-content">
+
+      <!-- DASHBOARD -->
+      <div id="sa-dashboard">
+        <div class="pg-head">
+          <div class="pg-head-left">
+            <h1>Vue d'ensemble</h1>
+            <p>Plateforme FedeActiva · Packs documentaires agricoles · Togo</p>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-pale" onclick="toast('📄 Rapport PDF généré')">⬇ Rapport</button>
+            <button class="btn btn-gold" onclick="openModal('new-fed')">+ Nouvelle fédération</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi g">
+            <div class="kpi-ico">📦</div>
+            <div class="kpi-label">Packs vendus (total)</div>
+            <div class="kpi-val">14 392</div>
+            <div class="kpi-trend up">↑ +24% ce mois · 847 nouveaux</div>
+          </div>
+          <div class="kpi a">
+            <div class="kpi-ico">💰</div>
+            <div class="kpi-label">Revenus générés (FCFA)</div>
+            <div class="kpi-val">7,2M</div>
+            <div class="kpi-trend up">↑ +22% · 4 fédérations</div>
+          </div>
+          <div class="kpi b">
+            <div class="kpi-ico">📄</div>
+            <div class="kpi-label">Fichiers livrés</div>
+            <div class="kpi-val">28 784</div>
+            <div class="kpi-trend up">Excel + Word · taux 100%</div>
+          </div>
+          <div class="kpi r">
+            <div class="kpi-ico">🎯</div>
+            <div class="kpi-label">Commissions plateforme</div>
+            <div class="kpi-val">720 K</div>
+            <div class="kpi-trend up">10% du CA · XOF</div>
+          </div>
+        </div>
+
+        <div class="g31">
+          <div class="panel">
+            <div class="ph"><h3>Ventes de packs (2025)</h3><span class="ph-sub">Toutes fédérations</span></div>
+            <div class="pb">
+              <div class="bar-chart">
+                <div class="bar dim" style="height:25%"></div>
+                <div class="bar dim" style="height:38%"></div>
+                <div class="bar" style="height:52%"></div>
+                <div class="bar" style="height:64%"></div>
+                <div class="bar hi" style="height:80%"></div>
+                <div class="bar" style="height:71%"></div>
+                <div class="bar" style="height:87%"></div>
+                <div class="bar hi" style="height:100%"></div>
+                <div class="bar" style="height:74%"></div>
+                <div class="bar" style="height:90%"></div>
+                <div class="bar" style="height:93%"></div>
+                <div class="bar dim" style="height:18%"></div>
+              </div>
+              <div class="bar-lbls">
+                <span>Jan</span><span>Fév</span><span>Mar</span><span>Avr</span><span>Mai</span><span>Jun</span>
+                <span>Jul</span><span>Aoû</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Déc</span>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><h3>Activité récente</h3></div>
+            <div class="pb" style="padding:12px 16px;">
+              <div class="log-item"><div class="log-dot g"></div><div><div class="log-text">Pack <strong>Tomate – Golfe-Béatrice</strong> livré à Koffi A. · Excel + Word générés</div><div class="log-time">Il y a 2 min</div></div></div>
+              <div class="log-item"><div class="log-dot a"></div><div><div class="log-text">Nouveau pack créé – FENOMAT · <strong>Piment – Kpalimé</strong> · template v3</div><div class="log-time">Il y a 11 min</div></div></div>
+              <div class="log-item"><div class="log-dot r"></div><div><div class="log-text">Webhook T-Money <strong>timeout</strong> · FENM-2025-00841 · Retry #2 planifié</div><div class="log-time">Il y a 18 min</div></div></div>
+              <div class="log-item"><div class="log-dot b"></div><div><div class="log-text">Fédération <strong>FEPAB</strong> activée · 3 packs créés · widget déployé</div><div class="log-time">Il y a 1h</div></div></div>
+              <div class="log-item"><div class="log-dot g"></div><div><div class="log-text">Génération lot : <strong>200 packs Oignon – Zio</strong> créés en 3.2s</div><div class="log-time">Il y a 2h</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feds table -->
+        <div class="panel">
+          <div class="ph"><h3>Performance par fédération</h3><button class="btn btn-verdant btn-sm" onclick="openModal('new-fed')">+ Nouvelle fédération</button></div>
+          <table class="dt">
+            <thead><tr><th>Fédération</th><th>Packs actifs</th><th>Packs vendus</th><th>Fichiers livrés</th><th>Revenus XOF</th><th>Commission</th><th>Avancement</th><th>Statut</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="fed-ico fi-green">FNM</div><div><div style="font-weight:700;">FENOMAT</div><div style="font-size:11px;color:var(--fog);">Maraîchage · fenomat</div></div></div></td>
+                <td><strong>12</strong> packs</td><td>10 240</td><td>20 480</td><td style="font-weight:700;">5,12M</td><td>512K</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="prog-track"><div class="prog-fill" style="width:80%"></div></div><span style="font-size:11px;color:var(--fog);">80%</span></div></td>
+                <td><span class="bdg ok">Actif</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="toast('⚙️ Config FENOMAT')">Config</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="fed-ico fi-amber">FPB</div><div><div style="font-weight:700;">FEPAB</div><div style="font-size:11px;color:var(--fog);">Pêche artisanale · fepab</div></div></div></td>
+                <td><strong>5</strong> packs</td><td>2 640</td><td>5 280</td><td style="font-weight:700;">1,32M</td><td>132K</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="prog-track"><div class="prog-fill" style="width:35%;background:var(--amber)"></div></div><span style="font-size:11px;color:var(--fog);">35%</span></div></td>
+                <td><span class="bdg ok">Actif</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="toast('⚙️ Config FEPAB')">Config</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="fed-ico fi-blue">FAG</div><div><div style="font-weight:700;">FAGTOGO</div><div style="font-size:11px;color:var(--fog);">Agropastoral · fagtogo</div></div></div></td>
+                <td><strong>8</strong> packs</td><td>1 512</td><td>3 024</td><td style="font-weight:700;">756K</td><td>75.6K</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="prog-track"><div class="prog-fill" style="width:22%;background:#3b82f6"></div></div><span style="font-size:11px;color:var(--fog);">22%</span></div></td>
+                <td><span class="bdg ok">Actif</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="toast('⚙️ Config FAGTOGO')">Config</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="fed-ico fi-slate">FCA</div><div><div style="font-weight:700;">FECOPAMA</div><div style="font-size:11px;color:var(--fog);">Coton & palmier · fecopama</div></div></div></td>
+                <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="prog-track"><div class="prog-fill" style="width:5%;background:#9ca3af"></div></div><span style="font-size:11px;color:var(--fog);">Setup</span></div></td>
+                <td><span class="bdg wait">En cours</span></td>
+                <td><button class="btn btn-pale btn-sm" onclick="toast('🚀 Onboarding FECOPAMA')">Onboarding</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PACKS SA PAGE -->
+      <div id="sa-packs-sa" style="display:none;">
+        <div class="pg-head">
+          <div class="pg-head-left"><h1>Packs documentaires</h1><p>Tous les packs actifs sur la plateforme (Excel + Word)</p></div>
+          <div class="pg-actions"><button class="btn btn-verdant" onclick="openModal('preview-doc')">👁 Prévisualiser un doc</button></div>
+        </div>
+        <div class="pack-grid">
+          <div class="pack-card" onclick="openModal('preview-doc')">
+            <div class="pack-header"><div class="pack-culture">🍅</div><div class="pack-name">Tomate</div><div class="pack-zone">📍 Golfe-Béatrice · FENOMAT</div><div class="pack-price">500 FCFA</div></div>
+            <div class="pack-body"><div class="pack-files">
+              <div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Compte d'exploitation prévisionnel</span><span class="pf-size">42 Ko</span></div>
+              <div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Tomate – Golfe</span><span class="pf-size">38 Ko</span></div>
+            </div></div>
+            <div class="pack-footer"><span>Vendu 3 842 fois</span><span class="bdg ok" style="font-size:10px;">Actif</span></div>
+          </div>
+          <div class="pack-card" onclick="openModal('preview-doc')">
+            <div class="pack-header"><div class="pack-culture">🧅</div><div class="pack-name">Oignon</div><div class="pack-zone">📍 Zio-Centre · FENOMAT</div><div class="pack-price">500 FCFA</div></div>
+            <div class="pack-body"><div class="pack-files">
+              <div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Compte d'exploitation prévisionnel</span><span class="pf-size">45 Ko</span></div>
+              <div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Oignon – Zio</span><span class="pf-size">41 Ko</span></div>
+            </div></div>
+            <div class="pack-footer"><span>Vendu 2 198 fois</span><span class="bdg ok" style="font-size:10px;">Actif</span></div>
+          </div>
+          <div class="pack-card" onclick="openModal('preview-doc')">
+            <div class="pack-header"><div class="pack-culture">🌶️</div><div class="pack-name">Piment</div><div class="pack-zone">📍 Kpalimé · FENOMAT</div><div class="pack-price">500 FCFA</div></div>
+            <div class="pack-body"><div class="pack-files">
+              <div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Compte d'exploitation prévisionnel</span><span class="pf-size">40 Ko</span></div>
+              <div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Piment – Kpalimé</span><span class="pf-size">36 Ko</span></div>
+            </div></div>
+            <div class="pack-footer"><span>Vendu 1 240 fois</span><span class="bdg ok" style="font-size:10px;">Actif</span></div>
+          </div>
+          <div class="pack-card">
+            <div class="pack-header" style="background:linear-gradient(135deg,#4a5568,#718096);"><div class="pack-culture">🥬</div><div class="pack-name">Laitue</div><div class="pack-zone">📍 Agoé-Nord · FENOMAT</div><div class="pack-price">500 FCFA</div></div>
+            <div class="pack-body"><div class="pack-files">
+              <div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Compte d'exploitation prévisionnel</span><span class="pf-size">38 Ko</span></div>
+              <div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Laitue – Agoé</span><span class="pf-size">33 Ko</span></div>
+            </div></div>
+            <div class="pack-footer"><span>Vendu 960 fois</span><span class="bdg wait" style="font-size:10px;">Brouillon</span></div>
+          </div>
+          <div class="pack-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;cursor:pointer;min-height:160px;background:var(--cream);" onclick="saPage('cultures-sa',null)">
+            <div style="text-align:center;color:var(--fog);">
+              <div style="font-size:32px;margin-bottom:8px;">➕</div>
+              <div style="font-size:13px;font-weight:700;">Nouveau pack</div>
+              <div style="font-size:11px;margin-top:3px;">Culture + Canton + Templates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOC PREVIEW PAGE -->
+      <div id="sa-previews" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Prévisualisation des documents</h1><p>Aperçu des fichiers Excel & Word générés dynamiquement</p></div></div>
+        <div class="g2">
+          <div>
+            <p style="font-size:12px;font-weight:700;color:var(--mist);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">📊 Fichier Excel généré (exceljs)</p>
+            <div class="doc-preview">
+              <div class="doc-toolbar">
+                <span class="doc-toolbar-name">📊 Compte_Exploitation_Tomate_Golfe_Beatrice_AMETSITSI.xlsx</span>
+                <div class="doc-toolbar-actions"><button onclick="toast('⬇ Téléchargement Excel simulé')">⬇ DL</button><button onclick="toast('🔁 Régénération du fichier')">↺ Regen</button></div>
+              </div>
+              <div class="doc-content">
+                <h4>📊 Compte d'exploitation prévisionnel – Tomate · Golfe-Béatrice</h4>
+                <p style="font-size:11px;color:var(--mist);margin-bottom:10px;">Producteur : Koffi AMETSITSI · Campagne 2025–2026 · Généré le 15/08/2025</p>
+                <table class="doc-table">
+                  <thead><tr><th>Poste de charge</th><th>Quantité</th><th>Prix unit. (FCFA)</th><th>Total (FCFA)</th></tr></thead>
+                  <tbody>
+                    <tr><td>Semences tomate F1</td><td>50 g</td><td>4 500</td><td>4 500</td></tr>
+                    <tr><td>Engrais NPK 15-15-15</td><td>50 kg</td><td>450</td><td>22 500</td></tr>
+                    <tr><td>Engrais urée 46%</td><td>25 kg</td><td>420</td><td>10 500</td></tr>
+                    <tr><td>Pesticides (fongicide+insecticide)</td><td>1 kit</td><td>12 000</td><td>12 000</td></tr>
+                    <tr><td>Main-d'œuvre labour</td><td>5 j</td><td>2 500</td><td>12 500</td></tr>
+                    <tr><td>Main-d'œuvre entretien</td><td>20 j</td><td>2 000</td><td>40 000</td></tr>
+                    <tr><td>Transport & commercialisation</td><td>—</td><td>—</td><td>8 000</td></tr>
+                    <tr style="font-weight:700;background:#e8f5e9;"><td colspan="3"><strong>TOTAL CHARGES</strong></td><td><strong>110 000</strong></td></tr>
+                    <tr><td>Rendement estimé</td><td>1 200 kg</td><td>—</td><td>—</td></tr>
+                    <tr><td>Prix de vente moyen</td><td>—</td><td>175 FCFA/kg</td><td>—</td></tr>
+                    <tr style="font-weight:700;background:#c8e6c9;"><td colspan="3"><strong>CHIFFRE D'AFFAIRES ESTIMÉ</strong></td><td><strong>210 000</strong></td></tr>
+                    <tr style="font-weight:800;background:#a5d6a7;color:#1b5e20;"><td colspan="3"><strong>MARGE NETTE ESTIMÉE</strong></td><td><strong>100 000</strong></td></tr>
+                    <tr><td colspan="3">Seuil de rentabilité (kg)</td><td>629 kg</td></tr>
+                  </tbody>
+                </table>
+                <p style="font-size:11px;color:var(--mist);margin-top:8px;font-style:italic;">⚠ Les formules Excel sont actives. Le producteur peut modifier ses propres chiffres.</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:12px;font-weight:700;color:var(--mist);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">📝 Fichier Word généré (docx.js)</p>
+            <div class="doc-preview">
+              <div class="doc-toolbar word">
+                <span class="doc-toolbar-name">📝 Itineraire_Technique_Tomate_Golfe_AMETSITSI.docx</span>
+                <div class="doc-toolbar-actions"><button onclick="toast('⬇ Téléchargement Word simulé')">⬇ DL</button><button onclick="toast('🔁 Régénération du fichier')">↺ Regen</button></div>
+              </div>
+              <div class="doc-content">
+                <h4>🌱 Itinéraire technique – Tomate (Lycopersicon esculentum)</h4>
+                <p style="font-size:11px;color:var(--mist);margin-bottom:10px;"><em>Zone : Golfe-Béatrice · Région Maritime · Adapté au climat côtier subtropical</em></p>
+                <table class="doc-table word-table">
+                  <thead><tr><th>Phase</th><th>Opération</th><th>Période</th><th>Intrants / Notes</th></tr></thead>
+                  <tbody>
+                    <tr><td>Préparation</td><td>Labour & billonnage</td><td>J-21</td><td>Profondeur 30cm · Apport fumure organique 2t/ha</td></tr>
+                    <tr><td>Pépinière</td><td>Semis en caissettes</td><td>J-21</td><td>Semences F1 certifiées · 0,5g/m²</td></tr>
+                    <tr><td>Repiquage</td><td>Mise en place jeunes plants</td><td>J0</td><td>25–30 jours après semis · Espacement 50×40cm</td></tr>
+                    <tr><td>Fertilisation 1</td><td>Apport NPK de fond</td><td>J+7</td><td>NPK 15-15-15 · 200 kg/ha</td></tr>
+                    <tr><td>Irrigation</td><td>Arrosage régulier</td><td>J0→J75</td><td>Goutte-à-goutte ou arrosoir · 5L/plant/j en saison sèche</td></tr>
+                    <tr><td>Traitement 1</td><td>Insecticide préventif</td><td>J+14</td><td>Imidaclopride 0,5ml/L · contre mouche blanche</td></tr>
+                    <tr><td>Fertilisation 2</td><td>Urée en couverture</td><td>J+30</td><td>Urée 46% · 100 kg/ha</td></tr>
+                    <tr><td>Traitement 2</td><td>Fongicide antimildiou</td><td>J+45</td><td>Mancozèbe 2g/L · toutes les 2 semaines</td></tr>
+                    <tr><td><strong>Récolte</strong></td><td><strong>Cueillette progressive</strong></td><td><strong>J+70 → J+90</strong></td><td><strong>À maturité rouge · 1 200 kg/ha estimé</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEDS PAGE -->
+      <div id="sa-feds" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Gestion des Fédérations</h1><p>4 fédérations · 3 actives</p></div><button class="btn btn-verdant" onclick="openModal('new-fed')">+ Nouvelle fédération</button></div>
+        <div class="panel"><table class="dt">
+          <thead><tr><th>Nom</th><th>Slug</th><th>Widget API Key</th><th>Packs actifs</th><th>Commission</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:10px;"><div class="fed-ico fi-green">FNM</div><strong>FENOMAT</strong></div></td><td><code>fenomat</code></td><td><code>fk_live_3a9b2c••••</code></td><td>12 packs</td><td>10%</td><td><span class="bdg ok">Actif</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✏️ Édition FENOMAT')">Éditer</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:10px;"><div class="fed-ico fi-amber">FPB</div><strong>FEPAB</strong></div></td><td><code>fepab</code></td><td><code>fk_live_7f1e4d••••</code></td><td>5 packs</td><td>10%</td><td><span class="bdg ok">Actif</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✏️ Édition FEPAB')">Éditer</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- CULTURES SA -->
+      <div id="sa-cultures-sa" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Cultures & Templates</h1><p>Gérez les itinéraires techniques et templates de budget</p></div><button class="btn btn-verdant" onclick="toast('🌱 Nouvelle culture ajoutée')">+ Nouvelle culture</button></div>
+        <div class="panel"><div class="pb"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+          <div class="pack-card"><div class="pack-header"><div class="pack-culture">🍅</div><div class="pack-name">Tomate</div></div><div class="pack-body" style="padding:12px 16px;"><div style="font-size:12px;color:var(--mist);">Itinéraire : <strong style="color:var(--verdant);">OK</strong></div><div style="font-size:12px;color:var(--mist);">Budget template : <strong style="color:var(--verdant);">OK</strong></div><div style="font-size:12px;color:var(--mist);">Packs liés : <strong>8</strong></div></div></div>
+          <div class="pack-card"><div class="pack-header"><div class="pack-culture">🧅</div><div class="pack-name">Oignon</div></div><div class="pack-body" style="padding:12px 16px;"><div style="font-size:12px;color:var(--mist);">Itinéraire : <strong style="color:var(--verdant);">OK</strong></div><div style="font-size:12px;color:var(--mist);">Budget template : <strong style="color:var(--verdant);">OK</strong></div><div style="font-size:12px;color:var(--mist);">Packs liés : <strong>6</strong></div></div></div>
+          <div class="pack-card"><div class="pack-header"><div class="pack-culture">🌶️</div><div class="pack-name">Piment</div></div><div class="pack-body" style="padding:12px 16px;"><div style="font-size:12px;color:var(--mist);">Itinéraire : <strong style="color:var(--verdant);">OK</strong></div><div style="font-size:12px;color:var(--mist);">Budget template : <strong style="color:var(--verdant);">OK</strong></div><div style="font-size:12px;color:var(--mist);">Packs liés : <strong>4</strong></div></div></div>
+          <div class="pack-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;background:var(--cream);cursor:pointer;min-height:120px;" onclick="toast('🌱 Formulaire nouvelle culture')"><div style="text-align:center;color:var(--fog);"><div style="font-size:28px;">➕</div><div style="font-size:12px;font-weight:700;margin-top:4px;">Ajouter</div></div></div>
+        </div></div></div>
+      </div>
+
+      <!-- WEBHOOKS -->
+      <div id="sa-webhooks" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Webhooks FedaPay</h1><p>Supervision IPN · 2 erreurs détectées</p></div><button class="btn btn-ghost" onclick="toast('🔄 Retry lancé')">↻ Retry erreurs</button></div>
+        <div class="g2">
+          <div class="panel"><div class="ph"><h3>Statut global</h3></div><div class="pb">
+            <div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><strong>Webhooks confirmés (24h)</strong> : 152</div></div></div>
+            <div class="log-item"><div class="log-dot a"></div><div><div class="log-text"><strong>En attente de retry</strong> : 2 · Prochaine tentative dans 4min</div></div></div>
+            <div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><strong>Taux de livraison fichiers</strong> : 100% · 0 échec</div></div></div>
+            <div class="log-item"><div class="log-dot b"></div><div><div class="log-text"><strong>Temps moyen génération pack</strong> : 1.8s (Excel) + 0.9s (Word)</div></div></div>
+          </div></div>
+          <div class="panel"><div class="ph"><h3>Log IPN récent</h3></div><div class="pb" style="padding:12px 16px;">
+            <div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><code>FENM-2025-00847</code> · Orange Money · <strong>confirmé</strong> · Pack généré & livré</div><div class="log-time">14:32:18 · 200 OK</div></div></div>
+            <div class="log-item"><div class="log-dot r"></div><div><div class="log-text"><code>FENM-2025-00841</code> · T-Money <strong>timeout</strong> · Pack EN ATTENTE · Retry #2</div><div class="log-time">14:18:05 · 503</div></div></div>
+            <div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><code>FPAB-2025-00312</code> · 500F · <strong>confirmé</strong> · Oignon-Kpomé livré</div><div class="log-time">13:55:42 · 200 OK</div></div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- STORAGE -->
+      <div id="sa-storage" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Stockage des fichiers</h1><p>Fichiers générés dynamiquement · Tokens temporaires 15min</p></div></div>
+        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
+          <div class="kpi g"><div class="kpi-label">Fichiers générés (total)</div><div class="kpi-val">28 784</div><div class="kpi-trend">Excel + Word</div></div>
+          <div class="kpi a"><div class="kpi-label">Stockage utilisé</div><div class="kpi-val">3,2 GB</div><div class="kpi-trend">~112 Ko / pack moyen</div></div>
+          <div class="kpi b"><div class="kpi-label">Tokens actifs (15min)</div><div class="kpi-val">42</div><div class="kpi-trend up">Téléchargements en cours</div></div>
+        </div>
+        <div class="panel"><div class="ph"><h3>Architecture stockage</h3></div><div class="pb">
+          <div class="alert-info"><div class="ai-ico">💾</div><div class="ai-text">Les fichiers sont générés <strong>à la demande</strong> au moment du paiement confirmé (webhook IPN). Ils sont stockés dans <code>/storage/{federation_id}/{order_id}/</code> et accessibles via un token temporaire (15 minutes) envoyé par SMS/email. Les fichiers sont supprimés après 90 jours.</div></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--ink);color:var(--mint);padding:16px;border-radius:10px;line-height:1.8;">
+            /storage/<br>
+            &nbsp;&nbsp;fenomat/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;FENM-2025-00847/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;budget_tomate_golfe_ametsitsi.xlsx &nbsp;(42 Ko)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itineraire_tomate_golfe_ametsitsi.docx (38 Ko)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;FENM-2025-00846/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;budget_oignon_zio_bossou.xlsx<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itineraire_oignon_zio_bossou.docx
+          </div>
+        </div></div>
+      </div>
+
+      <!-- COMMISSIONS -->
+      <div id="sa-commissions" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Commissions</h1></div></div><div class="kpi-row"><div class="kpi g"><div class="kpi-label">Commission totale 2025</div><div class="kpi-val">720 K</div><div class="kpi-trend">XOF</div></div><div class="kpi a"><div class="kpi-label">Ce mois</div><div class="kpi-val">84 500</div><div class="kpi-trend up">↑ +24%</div></div><div class="kpi b"><div class="kpi-label">Taux moyen</div><div class="kpi-val">10%</div><div class="kpi-trend">Par pack vendu</div></div></div></div>
+
+      <!-- GEO -->
+      <div id="sa-geo" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Géographie Togo</h1><p>5 régions · 39 préfectures · 394 cantons · PostGIS</p></div></div><div class="panel"><div class="pb" style="text-align:center;padding:60px;color:var(--fog);"><div style="font-size:48px;margin-bottom:12px;">🗺️</div><p>Carte interactive PostGIS + Leaflet.js · Choroplethe des ventes</p></div></div></div>
+      <div id="sa-logs" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Audit Logs</h1></div></div><div class="panel"><div class="pb"><div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><strong>[GEN]</strong> Pack Tomate-Golfe généré en 2.7s · Order FENM-2025-00847 · excel+docx OK</div><div class="log-time">2025-08-15 14:32:20</div></div></div><div class="log-item"><div class="log-dot b"></div><div><div class="log-text"><strong>[PAYMENT]</strong> IPN reçu FedaPay · FENM-2025-00847 · Orange Money · 500 XOF · confirmed</div><div class="log-time">2025-08-15 14:32:18</div></div></div><div class="log-item"><div class="log-dot a"></div><div><div class="log-text"><strong>[SMS]</strong> Lien téléchargement envoyé · +228 90 12 34 56 · token valide 15min</div><div class="log-time">2025-08-15 14:32:22</div></div></div></div></div></div>
+      <div id="sa-settings-sa" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Paramètres</h1></div></div><div class="panel"><div class="pb"><div class="fg"><label class="fl">Prix unitaire pack (FCFA)</label><input class="fc" value="500" style="max-width:200px;" readonly></div><div class="fg"><label class="fl">Commission par défaut (%)</label><input class="fc" value="10" style="max-width:200px;"></div><div class="fg"><label class="fl">Durée token téléchargement (min)</label><input class="fc" value="15" style="max-width:200px;"></div><div class="fg"><label class="fl">Rétention fichiers (jours)</label><input class="fc" value="90" style="max-width:200px;"></div><button class="btn btn-forest" onclick="toast('✅ Paramètres sauvegardés')">Sauvegarder</button></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ADMIN FÉDÉRATION
+═══════════════════════════════════════ -->
+<div id="view-af" class="view">
+  <div class="af-shell">
+    <aside class="af-rail">
+      <div class="af-fed-banner">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="fed-ico fi-green" style="width:42px;height:42px;">FNM</div>
+          <div>
+            <div class="fb-name">FENOMAT</div>
+            <div class="fb-url">fenomat.admin.fedeactiva.tg</div>
+          </div>
+        </div>
+      </div>
+      <div class="rail-section" style="color:rgba(255,255,255,.2);">Tableau de bord</div>
+      <div class="rail-link active" onclick="afPage('af-dash',this)"><span class="ri">📊</span>Aperçu</div>
+      <div class="rail-link" onclick="afPage('af-ventes',this)"><span class="ri">📋</span>Suivi des ventes</div>
+      <div class="rail-link" onclick="afPage('af-stats',this)"><span class="ri">📈</span>Statistiques</div>
+      <div class="rail-section" style="color:rgba(255,255,255,.2);">Packs documentaires</div>
+      <div class="rail-link" onclick="afPage('af-packs',this)"><span class="ri">📦</span>Mes packs</div>
+      <div class="rail-link" onclick="afPage('af-new-pack',this)"><span class="ri">➕</span>Créer un pack</div>
+      <div class="rail-section" style="color:rgba(255,255,255,.2);">Configuration</div>
+      <div class="rail-link" onclick="afPage('af-cultures',this)"><span class="ri">🌿</span>Cultures actives</div>
+      <div style="flex:1"></div>
+      <div class="rail-link" onclick="afPage('af-profil',this)"><span class="ri">👤</span>Profil</div>
+    </aside>
+
+    <main class="af-content">
+
+      <!-- DASH -->
+      <div id="af-dash">
+        <div class="pg-head"><div class="pg-head-left"><h1>Bonjour, FENOMAT 👋</h1><p>Fédération Nationale des Organisations Maraîchères du Togo</p></div><button class="btn btn-verdant" onclick="afPage('af-new-pack',null)">+ Créer un pack</button></div>
+        <div class="sr3">
+          <div class="sc"><div class="sl">Packs disponibles</div><div class="sv">12</div><div class="ss">types de packs actifs</div></div>
+          <div class="sc"><div class="sl">Vendus ce mois</div><div class="sv">847</div><div class="ss">↑ +31% vs juillet</div></div>
+          <div class="sc"><div class="sl">Revenus (XOF)</div><div class="sv">423 500</div><div class="ss">Août 2025</div></div>
+        </div>
+        <div class="g2">
+          <div class="panel"><div class="ph"><h3>Ventes par culture</h3></div><div class="pb">
+            <div class="bar-chart" style="height:90px;">
+              <div class="bar" style="height:100%"></div><div class="bar hi" style="height:72%"></div>
+              <div class="bar" style="height:58%"></div><div class="bar dim" style="height:35%"></div>
+              <div class="bar" style="height:48%"></div>
+            </div>
+            <div class="bar-lbls"><span>Tomate</span><span>Oignon</span><span>Piment</span><span>Laitue</span><span>Gombo</span></div>
+          </div></div>
+          <div class="panel"><div class="ph"><h3>Derniers packs vendus</h3></div><div class="pb" style="padding:10px 14px;">
+            <div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><strong>Pack Tomate – Golfe</strong> · Koffi A. · Excel+Word livrés par SMS</div><div class="log-time">Il y a 2 min</div></div></div>
+            <div class="log-item"><div class="log-dot g"></div><div><div class="log-text"><strong>Pack Oignon – Zio</strong> · Afi B. · Excel+Word livrés par SMS</div><div class="log-time">Il y a 14 min</div></div></div>
+            <div class="log-item"><div class="log-dot a"></div><div><div class="log-text"><strong>Pack Piment – Agoé</strong> · Yawa K. · En attente paiement</div><div class="log-time">Il y a 32 min</div></div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- PACKS AF -->
+      <div id="af-packs" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Mes packs documentaires</h1><p>12 packs actifs · FENOMAT</p></div><button class="btn btn-verdant" onclick="afPage('af-new-pack',null)">+ Nouveau pack</button></div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-header"><div class="pack-culture">🍅</div><div class="pack-name">Tomate</div><div class="pack-zone">📍 Golfe-Béatrice</div><div class="pack-price">500 FCFA</div></div><div class="pack-body"><div class="pack-files"><div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Budget prévisionnel Tomate</span></div><div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Tomate</span></div></div></div><div class="pack-footer"><span>Vendu 3 842×</span><span class="bdg ok" style="font-size:10px;">Actif</span></div></div>
+          <div class="pack-card"><div class="pack-header"><div class="pack-culture">🧅</div><div class="pack-name">Oignon</div><div class="pack-zone">📍 Zio-Centre</div><div class="pack-price">500 FCFA</div></div><div class="pack-body"><div class="pack-files"><div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Budget prévisionnel Oignon</span></div><div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Oignon</span></div></div></div><div class="pack-footer"><span>Vendu 2 198×</span><span class="bdg ok" style="font-size:10px;">Actif</span></div></div>
+          <div class="pack-card"><div class="pack-header"><div class="pack-culture">🌶️</div><div class="pack-name">Piment</div><div class="pack-zone">📍 Kpalimé</div><div class="pack-price">500 FCFA</div></div><div class="pack-body"><div class="pack-files"><div class="pack-file xlsx"><span class="pf-icon">📊</span><span class="pf-name">Budget prévisionnel Piment</span></div><div class="pack-file docx"><span class="pf-icon">📝</span><span class="pf-name">Itinéraire technique Piment</span></div></div></div><div class="pack-footer"><span>Vendu 1 240×</span><span class="bdg ok" style="font-size:10px;">Actif</span></div></div>
+          <div class="pack-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:180px;background:var(--cream);cursor:pointer;" onclick="afPage('af-new-pack',null)"><div style="text-align:center;color:var(--fog);"><div style="font-size:32px;">➕</div><div style="font-size:13px;font-weight:700;margin-top:6px;">Nouveau pack</div></div></div>
+        </div>
+      </div>
+
+      <!-- CRÉER UN PACK -->
+      <div id="af-new-pack" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Créer un nouveau pack</h1><p>Pack = 1 fichier Excel budget + 1 fichier Word itinéraire technique</p></div></div>
+        <div class="stepper">
+          <div class="step-node done"><div class="step-ball">✓</div><div class="step-label">Culture</div></div>
+          <div class="step-wire done"></div>
+          <div class="step-node active"><div class="step-ball">2</div><div class="step-label">Zone & paramètres</div></div>
+          <div class="step-wire"></div>
+          <div class="step-node"><div class="step-ball">3</div><div class="step-label">Templates docs</div></div>
+          <div class="step-wire"></div>
+          <div class="step-node"><div class="step-ball">4</div><div class="step-label">Validation</div></div>
+        </div>
+        <div class="g13">
+          <div class="panel">
+            <div class="ph"><h3>Étape 2 – Zone & paramètres</h3></div>
+            <div class="pb">
+              <div class="fg"><label class="fl">Culture sélectionnée</label>
+                <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--foam);border-radius:9px;border:1.5px solid var(--mint);">
+                  <span style="font-size:22px;">🍅</span>
+                  <span style="font-weight:700;color:var(--forest);">Tomate</span>
+                  <span style="font-size:11px;color:var(--verdant);margin-left:auto;">500 FCFA / pack</span>
+                </div>
+              </div>
+              <div class="fg"><label class="fl">Région</label>
+                <select class="fc"><option>Maritime</option><option>Plateaux</option><option>Centrale</option><option>Kara</option><option>Savanes</option></select>
+              </div>
+              <div class="fg"><label class="fl">Préfecture</label>
+                <select class="fc"><option>Golfe</option><option>Zio</option><option>Aného</option><option>Vo</option></select>
+              </div>
+              <div class="fg"><label class="fl">Canton</label>
+                <select class="fc"><option>Golfe-Béatrice</option><option>Golfe-Centre</option><option>Baguida</option><option>Agoéville</option></select>
+              </div>
+              <div class="fr2">
+                <div class="fg"><label class="fl">Campagne</label><input class="fc" value="Campagne Tomate 2025–2026"></div>
+                <div class="fg"><label class="fl">Rendement estimé (kg/ha)</label><input class="fc" type="number" value="1200"></div>
+              </div>
+              <div class="fg"><label class="fl">Templates de documents</label>
+                <div class="template-picker">
+                  <div class="tpl-card sel"><div class="tpl-ico">📊</div><div class="tpl-name">Budget standard maraîcher</div><div class="tpl-desc">Charges + recettes + marge + seuil de rentabilité</div></div>
+                  <div class="tpl-card sel"><div class="tpl-ico">📝</div><div class="tpl-name">Itinéraire technique v3</div><div class="tpl-desc">Calendrier cultural adapté au canton (climat, sol)</div></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:8px;">
+                <button class="btn btn-pale" style="flex:1;" onclick="afPage('af-packs',null)">← Retour</button>
+                <button class="btn btn-verdant" style="flex:1;" onclick="afPage('af-pack-confirm',null)">Créer le pack →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h3>Aperçu du pack</h3></div>
+            <div class="pb">
+              <div class="pack-builder">
+                <div class="pb-label">Pack documentaire · Aperçu</div>
+                <div class="pb-culture-row">
+                  <div class="pb-ico">🍅</div>
+                  <div>
+                    <div class="pb-culture">Tomate</div>
+                    <div class="pb-zone">📍 Golfe-Béatrice · Préfecture du Golfe · Maritime</div>
+                  </div>
+                </div>
+                <div class="pb-price-tag">💰 500 FCFA par pack</div>
+                <div class="pb-files">
+                  <div class="pb-file">
+                    <span style="font-size:20px;">📊</span>
+                    <div class="pf-label">Budget_Tomate_Golfe_Beatrice.xlsx<br><span style="font-size:10px;opacity:.5;">Formules actives · ~42 Ko</span></div>
+                    <span class="pf-type xlsx-tag">EXCEL</span>
+                  </div>
+                  <div class="pb-file">
+                    <span style="font-size:20px;">📝</span>
+                    <div class="pf-label">Itineraire_Tomate_Golfe_Beatrice.docx<br><span style="font-size:10px;opacity:.5;">Calendrier cultural · ~38 Ko</span></div>
+                    <span class="pf-type docx-tag">WORD</span>
+                  </div>
+                </div>
+                <div class="pb-summary">
+                  <div><span>Campagne</span><br><strong>Tomate 2025–2026</strong></div>
+                  <div style="text-align:right;"><span>Rendement estimé</span><br><strong>1 200 kg/ha</strong></div>
+                </div>
+              </div>
+              <div style="margin-top:14px;padding:12px;background:var(--foam);border-radius:9px;">
+                <div style="font-size:11px;font-weight:700;color:var(--verdant);margin-bottom:8px;">📄 CONTENU EXCEL GÉNÉRÉ</div>
+                <div style="font-size:12px;color:var(--slate);line-height:1.9;">✅ Semences, engrais, pesticides<br>✅ Main-d'œuvre (labour + entretien)<br>✅ Transport & commercialisation<br>✅ Seuil de rentabilité (formule)<br>✅ Marge nette estimée</div>
+              </div>
+              <div style="margin-top:10px;padding:12px;background:#e3f2fd;border-radius:9px;">
+                <div style="font-size:11px;font-weight:700;color:#1565c0;margin-bottom:8px;">📝 CONTENU WORD GÉNÉRÉ</div>
+                <div style="font-size:12px;color:var(--slate);line-height:1.9;">✅ Préparation du sol<br>✅ Pépinière & repiquage<br>✅ Plan de fertilisation<br>✅ Calendrier des traitements<br>✅ Irrigation & récolte</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PACK CONFIRM -->
+      <div id="af-pack-confirm" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Pack créé avec succès ! 🎉</h1><p>Les templates sont chargés · Le pack est prêt à être vendu</p></div></div>
+        <div class="panel" style="max-width:580px;"><div class="pb" style="text-align:center;padding:28px;">
+          <div style="font-size:48px;margin-bottom:12px;">✅</div>
+          <h3 style="font-size:20px;font-weight:800;color:var(--forest);">Pack documentaire créé</h3>
+          <p style="color:var(--mist);font-size:14px;margin-top:6px;">Le pack est en brouillon. Publiez-le pour qu'il apparaisse dans le widget.</p>
+          <div style="background:var(--foam);border-radius:10px;padding:14px;margin:20px 0;text-align:left;">
+            <div style="font-size:11px;font-weight:700;color:var(--verdant);margin-bottom:10px;">PACK · DÉTAILS</div>
+            <div style="font-size:13px;line-height:2;color:var(--slate);">
+              <strong>Culture :</strong> 🍅 Tomate<br>
+              <strong>Zone :</strong> Golfe-Béatrice · Golfe · Maritime<br>
+              <strong>Prix :</strong> 500 FCFA<br>
+              <strong>Fichiers :</strong> Excel (budget) + Word (itinéraire)<br>
+              <strong>Statut :</strong> Brouillon (non publié)
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="btn btn-pale" onclick="afPage('af-packs',null)">Voir mes packs</button>
+            <button class="btn btn-gold" onclick="toast('🚀 Pack publié ! Visible dans le widget FENOMAT')">🚀 Publier maintenant</button>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- VENTES AF -->
+      <div id="af-ventes" style="display:none;">
+        <div class="pg-head"><div class="pg-head-left"><h1>Suivi des ventes</h1><p>10 240 packs vendus · 20 480 fichiers livrés</p></div><button class="btn btn-pale" onclick="toast('📥 CSV exporté')">⬇ Export CSV</button></div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+          <select class="fc" style="width:auto;flex:none;"><option>Toutes les cultures</option><option>🍅 Tomate</option><option>🧅 Oignon</option></select>
+          <select class="fc" style="width:auto;flex:none;"><option>Toutes les zones</option><option>Golfe</option><option>Zio</option></select>
+          <select class="fc" style="width:auto;flex:none;"><option>Août 2025</option><option>Juillet 2025</option></select>
+          <input class="fc" style="flex:1;min-width:160px;" placeholder="🔍 Rechercher nom / téléphone…">
+        </div>
+        <div class="panel"><table class="dt"><thead><tr><th>Commande</th><th>Acheteur</th><th>Téléphone</th><th>Pack acheté</th><th>Montant</th><th>Paiement</th><th>Fichiers</th><th>Date</th><th>Statut</th></tr></thead><tbody>
+          <tr><td><code>FENM-2025-00847</code></td><td><div style="display:flex;align-items:center;gap:7px;"><div class="ava sm">KA</div>Koffi AMETSITSI</div></td><td>+228 90 12 34 56</td><td>🍅 Tomate · Golfe-Béatrice</td><td style="font-weight:700;color:var(--verdant);">500 F</td><td>📱 Orange Money</td><td><span style="font-size:11px;font-weight:700;color:#2e7d32;">📊 xlsx</span> <span style="font-size:11px;font-weight:700;color:#1565c0;">📝 docx</span></td><td style="font-size:11px;color:var(--fog);">15/08 14:32</td><td><span class="bdg ok">Livré</span></td></tr>
+          <tr><td><code>FENM-2025-00846</code></td><td><div style="display:flex;align-items:center;gap:7px;"><div class="ava sm" style="background:#2563eb;">AB</div>Afi BOSSOU</div></td><td>+228 91 23 45 67</td><td>🧅 Oignon · Zio-Centre</td><td style="font-weight:700;color:var(--verdant);">500 F</td><td>📱 T-Money</td><td><span style="font-size:11px;font-weight:700;color:#2e7d32;">📊 xlsx</span> <span style="font-size:11px;font-weight:700;color:#1565c0;">📝 docx</span></td><td style="font-size:11px;color:var(--fog);">15/08 13:18</td><td><span class="bdg ok">Livré</span></td></tr>
+          <tr><td><code>FENM-2025-00844</code></td><td><div style="display:flex;align-items:center;gap:7px;"><div class="ava sm" style="background:#7c3aed;">DT</div>Dodzi TETTEH</div></td><td>+228 93 45 67 89</td><td>🌶️ Piment · Kpalimé</td><td style="font-weight:700;color:var(--fog);">500 F</td><td>📱 T-Money</td><td style="color:var(--fog);font-size:11px;">En attente…</td><td style="font-size:11px;color:var(--fog);">14/08 16:42</td><td><span class="bdg wait">En attente</span></td></tr>
+        </tbody></table></div>
+      </div>
+
+      <!-- STATS, CULTURES, PROFIL -->
+      <div id="af-stats" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Statistiques</h1></div></div><div class="sr3" style="grid-template-columns:repeat(4,1fr);"><div class="sc"><div class="sl">Packs vendus</div><div class="sv">10 240</div></div><div class="sc"><div class="sl">Fichiers livrés</div><div class="sv">20 480</div></div><div class="sc"><div class="sl">Revenus (XOF)</div><div class="sv">5,12M</div></div><div class="sc"><div class="sl">Taux de livraison</div><div class="sv">100%</div></div></div></div>
+      <div id="af-cultures" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Cultures actives</h1></div></div><div class="panel"><div class="pb"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><div class="pack-card"><div class="pack-header"><div class="pack-culture">🍅</div><div class="pack-name">Tomate</div></div><div class="pack-body" style="padding:10px 14px;font-size:12px;color:var(--mist);">12 packs · Active</div></div><div class="pack-card"><div class="pack-header"><div class="pack-culture">🧅</div><div class="pack-name">Oignon</div></div><div class="pack-body" style="padding:10px 14px;font-size:12px;color:var(--mist);">6 packs · Active</div></div><div class="pack-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:100px;background:var(--cream);cursor:pointer;" onclick="toast('🌱 Demande envoyée au Super-Admin')"><div style="text-align:center;color:var(--fog);"><div style="font-size:24px;">➕</div><div style="font-size:12px;font-weight:700;">Demander</div></div></div></div></div></div></div>
+      <div id="af-profil" style="display:none;"><div class="pg-head"><div class="pg-head-left"><h1>Mon profil</h1></div></div><div class="panel" style="max-width:480px;"><div class="pb"><div class="fg"><label class="fl">Nom</label><input class="fc" value="Secrétaire FENOMAT"></div><div class="fg"><label class="fl">Email</label><input class="fc" value="admin@fenomat.tg"></div><div class="fg"><label class="fl">Téléphone</label><input class="fc" value="+228 22 21 30 00"></div><button class="btn btn-verdant" onclick="toast('✅ Profil mis à jour')">Sauvegarder</button></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PORTAIL PUBLIC / WIDGET
+═══════════════════════════════════════ -->
+<div id="view-pub" class="view">
+  <div class="pub-wrap">
+    <!-- Simulated federation site -->
+    <div class="host-bar">
+      <div class="host-logo-txt">🌿 FENOMAT</div>
+      <div class="host-nav"><a>Accueil</a><a>À propos</a><a>Nos membres</a><a>Contact</a></div>
+      <div class="host-hint">↑ Site hôte de la fédération</div>
+    </div>
+    <div class="host-hero">
+      <h2>Obtenez votre pack documentaire agricole</h2>
+      <p>Budget prévisionnel + Itinéraire technique personnalisé · 500 FCFA · Livraison immédiate par SMS</p>
+    </div>
+
+    <!-- THE WIDGET -->
+    <div class="widget-mount">
+      <!-- Header -->
+      <div class="w-head">
+        <div class="wh-fed-seal">FNM</div>
+        <div class="wh-info">
+          <h2>FENOMAT</h2>
+          <p>Packs documentaires · Excel + Word · 500 FCFA</p>
+        </div>
+        <div class="wh-stats">
+          <div class="wh-num">12</div>
+          <div class="wh-lab">packs disponibles</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="w-tabs">
+        <div class="w-tab active" onclick="wTab('boutique',this)">🛒 Boutique</div>
+        <div class="w-tab" onclick="wTab('client',this)">👤 Mon espace</div>
+      </div>
+
+      <!-- BOUTIQUE -->
+      <div id="w-boutique" class="w-body">
+
+        <!-- STEP: Choose pack -->
+        <div id="ws-choose" class="checkout-body">
+          <div class="pack-sel-header">
+            <h3>Choisissez votre pack documentaire</h3>
+            <span class="step-tag">Étape 1/3</span>
+          </div>
+          <div class="alert-info">
+            <div class="ai-ico">📦</div>
+            <div class="ai-text">Chaque pack inclut <strong>2 fichiers personnalisés</strong> : un <strong>budget Excel</strong> (compte d'exploitation prévisionnel) + un <strong>guide Word</strong> (itinéraire technique de la culture). Livraison immédiate par SMS/email après paiement.</div>
+          </div>
+          <div class="pack-choice-grid">
+            <div class="pcc" onclick="selectPack(this,'Tomate','🍅','Golfe-Béatrice')">
+              <div class="pcc-check">✓</div>
+              <div class="pcc-top"><div class="pcc-ico">🍅</div><div class="pcc-cult">Tomate</div><div class="pcc-zone">📍 Golfe-Béatrice</div><div class="pcc-price">500 F</div></div>
+              <div class="pcc-bot"><div class="pcc-files"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div><div class="pcc-avail">142 packs disponibles</div></div>
+            </div>
+            <div class="pcc" onclick="selectPack(this,'Oignon','🧅','Zio-Centre')">
+              <div class="pcc-check">✓</div>
+              <div class="pcc-top"><div class="pcc-ico">🧅</div><div class="pcc-cult">Oignon</div><div class="pcc-zone">📍 Zio-Centre</div><div class="pcc-price">500 F</div></div>
+              <div class="pcc-bot"><div class="pcc-files"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div><div class="pcc-avail">78 packs disponibles</div></div>
+            </div>
+            <div class="pcc" onclick="selectPack(this,'Piment','🌶️','Kpalimé')">
+              <div class="pcc-check">✓</div>
+              <div class="pcc-top"><div class="pcc-ico">🌶️</div><div class="pcc-cult">Piment</div><div class="pcc-zone">📍 Kpalimé</div><div class="pcc-price">500 F</div></div>
+              <div class="pcc-bot"><div class="pcc-files"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div><div class="pcc-avail">200 packs disponibles</div></div>
+            </div>
+            <div class="pcc" onclick="selectPack(this,'Laitue','🥬','Agoé-Nord')">
+              <div class="pcc-check">✓</div>
+              <div class="pcc-top"><div class="pcc-ico">🥬</div><div class="pcc-cult">Laitue</div><div class="pcc-zone">📍 Agoé-Nord</div><div class="pcc-price">500 F</div></div>
+              <div class="pcc-bot"><div class="pcc-files"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div><div class="pcc-avail">56 packs disponibles</div></div>
+            </div>
+            <div class="pcc" onclick="selectPack(this,'Gombo','🥦','Golfe-Centre')">
+              <div class="pcc-check">✓</div>
+              <div class="pcc-top"><div class="pcc-ico">🥦</div><div class="pcc-cult">Gombo</div><div class="pcc-zone">📍 Golfe-Centre</div><div class="pcc-price">500 F</div></div>
+              <div class="pcc-bot"><div class="pcc-files"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div><div class="pcc-avail">34 packs disponibles</div></div>
+            </div>
+            <div class="pcc" onclick="selectPack(this,'Concombre','🥒','Tsévié')">
+              <div class="pcc-check">✓</div>
+              <div class="pcc-top"><div class="pcc-ico">🥒</div><div class="pcc-cult">Concombre</div><div class="pcc-zone">📍 Tsévié</div><div class="pcc-price">500 F</div></div>
+              <div class="pcc-bot"><div class="pcc-files"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div><div class="pcc-avail">28 packs disponibles</div></div>
+            </div>
+          </div>
+          <button id="btn-pack-next" class="btn btn-forest" style="width:100%;opacity:.4;pointer-events:none;font-size:15px;padding:13px;" onclick="wStep('form')">Continuer avec ce pack →</button>
+        </div>
+
+        <!-- STEP: Form -->
+        <div id="ws-form" class="checkout-body" style="display:none;">
+          <div class="pack-sel-header">
+            <h3>Vos informations</h3>
+            <span class="step-tag">Étape 2/3</span>
+          </div>
+
+          <div id="selected-pack-receipt" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--foam);border-radius:10px;border:1.5px solid var(--mint);margin-bottom:16px;">
+            <span id="sp-ico" style="font-size:24px;">🍅</span>
+            <div>
+              <div style="font-weight:700;color:var(--forest);font-size:14px;" id="sp-name">Pack Tomate</div>
+              <div style="font-size:11px;color:var(--verdant);" id="sp-zone">📍 Golfe-Béatrice</div>
+              <div style="display:flex;gap:6px;margin-top:5px;"><span class="pcc-f xlsx-f">📊 Excel</span><span class="pcc-f docx-f">📝 Word</span></div>
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+              <div style="font-size:20px;font-weight:900;color:var(--verdant);">500 F</div>
+              <button onclick="wStep('choose')" style="font-size:10px;margin-top:4px;background:none;border:1px solid var(--sage);color:var(--verdant);padding:2px 8px;border-radius:6px;cursor:pointer;">Changer</button>
+            </div>
+          </div>
+
+          <div class="fr2">
+            <div class="fg"><label class="fl">Prénom *</label><input class="fc" placeholder="Koffi" id="f-prenom"></div>
+            <div class="fg"><label class="fl">Nom *</label><input class="fc" placeholder="AMETSITSI" id="f-nom"></div>
+          </div>
+          <div class="fg"><label class="fl">Téléphone Mobile Money *</label><input class="fc" placeholder="+228 90 00 00 00" type="tel" id="f-tel"></div>
+          <div class="fg"><label class="fl">Email (optionnel)</label><input class="fc" placeholder="votre@email.com" type="email"></div>
+          <div class="fg"><label class="fl">Mot de passe *</label><input class="fc" placeholder="Créez un mot de passe" type="password"></div>
+
+          <div class="alert-info" style="background:#e3f2fd;border-color:#90caf9;">
+            <div class="ai-ico">📱</div>
+            <div class="ai-text" style="color:#1565c0;">Après paiement, vous recevrez un <strong>SMS avec les liens de téléchargement</strong> de vos 2 fichiers (valables 15 minutes). Vous pourrez aussi les retrouver dans <strong>votre espace client</strong>.</div>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-pale" style="flex:1;" onclick="wStep('choose')">← Retour</button>
+            <button class="btn btn-forest" style="flex:2;" onclick="wStep('payment')">Continuer →</button>
+          </div>
+        </div>
+
+        <!-- STEP: Payment -->
+        <div id="ws-payment" class="checkout-body" style="display:none;">
+          <div class="pack-sel-header">
+            <h3>Paiement</h3>
+            <span class="step-tag">Étape 3/3</span>
+          </div>
+
+          <div class="pack-receipt">
+            <div class="pr-title">Récapitulatif</div>
+            <div class="pr-row">
+              <span class="pr-ico" id="pr-ico">🍅</span>
+              <div class="pr-info">
+                <div class="pn" id="pr-name">Pack Tomate · Golfe-Béatrice</div>
+                <div class="ps">Fédération FENOMAT · Campagne 2025–2026</div>
+              </div>
+              <div class="pr-price">500 F</div>
+            </div>
+            <div class="pr-files">
+              <div class="pr-file-tag xl">📊 Budget prévisionnel (.xlsx)</div>
+              <div class="pr-file-tag dc">📝 Itinéraire technique (.docx)</div>
+            </div>
+            <div class="pr-divider">
+              <span class="pd-label">Total à payer</span>
+              <span class="pd-total">500 FCFA</span>
+            </div>
+          </div>
+
+          <div style="font-size:13px;font-weight:700;color:var(--slate);margin-bottom:10px;">Méthode de paiement</div>
+          <div class="pay-grid">
+            <div class="pay-opt sel" onclick="selectPay(this)"><div class="po-ico">🟠</div><div><div class="po-name">Orange Money</div><div class="po-sub">Togo · Flooz</div></div></div>
+            <div class="pay-opt" onclick="selectPay(this)"><div class="po-ico">🟡</div><div><div class="po-name">T-Money</div><div class="po-sub">Togocel</div></div></div>
+            <div class="pay-opt" onclick="selectPay(this)"><div class="po-ico">🟢</div><div><div class="po-name">Moov Money</div><div class="po-sub">Moov Africa</div></div></div>
+            <div class="pay-opt" onclick="selectPay(this)"><div class="po-ico">💳</div><div><div class="po-name">Carte bancaire</div><div class="po-sub">Visa · Mastercard</div></div></div>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-pale" style="flex:1;" onclick="wStep('form')">← Retour</button>
+            <button class="btn btn-gold" style="flex:2;font-size:15px;padding:13px;" onclick="doPayment()">💳 Payer 500 FCFA via FedaPay</button>
+          </div>
+        </div>
+
+        <!-- STEP: Success -->
+        <div id="ws-success" class="checkout-body" style="display:none;">
+          <div class="success-wrap">
+            <div class="success-anim">🎉</div>
+            <h3>Paiement confirmé !</h3>
+            <div class="sw-sub">Vos 2 fichiers sont prêts. Téléchargez-les maintenant.</div>
+
+            <div class="dl-grid">
+              <div class="dl-card xl-card" onclick="toast('📊 Téléchargement Excel en cours…')">
+                <span class="dc-ico">📊</span>
+                <div>
+                  <div class="dc-name" id="dl-xl-name">Budget_Tomate_Golfe_AMETSITSI.xlsx</div>
+                  <div class="dc-size">42 Ko · Formules actives</div>
+                </div>
+                <button class="dc-btn">⬇ DL</button>
+              </div>
+              <div class="dl-card dc-card" onclick="toast('📝 Téléchargement Word en cours…')">
+                <span class="dc-ico">📝</span>
+                <div>
+                  <div class="dc-name" id="dl-dc-name">Itineraire_Tomate_Golfe_AMETSITSI.docx</div>
+                  <div class="dc-size">38 Ko · Calendrier cultural</div>
+                </div>
+                <button class="dc-btn">⬇ DL</button>
+              </div>
+            </div>
+
+            <div style="background:var(--foam);border-radius:10px;padding:14px;text-align:left;margin-bottom:16px;">
+              <div style="font-size:12px;font-weight:700;color:var(--verdant);margin-bottom:8px;">📱 SMS envoyé au +228 90 12 34 56</div>
+              <div style="font-size:12px;color:var(--slate);font-family:'JetBrains Mono',monospace;line-height:1.7;">FedeActiva: Votre pack est prêt !<br>📊 Excel: fedeactiva.tg/dl/abc123<br>📝 Word: fedeactiva.tg/dl/def456<br>Liens valides 15 min.</div>
+            </div>
+            <button class="btn btn-verdant" style="width:100%;" onclick="wTab('client',null);showClientLoggedIn()">Accéder à mon espace client →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESPACE CLIENT -->
+      <div id="w-client" class="w-body" style="display:none;">
+        <div id="ec-out">
+          <div style="text-align:center;padding:16px 0;">
+            <div style="font-size:40px;margin-bottom:10px;">👤</div>
+            <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px;">Mon espace client</div>
+            <p style="font-size:13px;color:var(--mist);margin-bottom:20px;">Retrouvez et re-téléchargez vos packs achetés</p>
+            <div class="fg"><input class="fc" placeholder="Téléphone (+228 XX XX XX XX)" type="tel"></div>
+            <div class="fg"><input class="fc" placeholder="Mot de passe" type="password"></div>
+            <button class="btn btn-forest" style="width:100%;font-size:14px;padding:12px;" onclick="showClientLoggedIn()">Se connecter</button>
+            <div style="margin-top:12px;font-size:12px;color:var(--fog);">Pas encore de compte ? <span style="color:var(--verdant);cursor:pointer;font-weight:600;" onclick="wTab('boutique',null)">Acheter un pack →</span></div>
+          </div>
+        </div>
+        <div id="ec-in" style="display:none;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--pale);">
+            <div class="ava" style="width:44px;height:44px;font-size:16px;">KA</div>
+            <div>
+              <div style="font-weight:700;color:var(--ink);" id="ec-name">Koffi AMETSITSI</div>
+              <div style="font-size:12px;color:var(--fog);">+228 90 12 34 56</div>
+            </div>
+            <button onclick="logoutClient()" style="margin-left:auto;background:none;border:1px solid var(--pale);color:var(--mist);font-size:11px;padding:5px 10px;border-radius:8px;cursor:pointer;">Déconnexion</button>
+          </div>
+          <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:14px;">Mes packs achetés</div>
+          <div id="ec-list">
+            <div class="ec-account-item">
+              <div class="ec-ai-ico">🍅</div>
+              <div class="ec-ai-info"><h4>Tomate · Golfe-Béatrice</h4><p>Acheté le 15/08/2025 · FENOMAT</p></div>
+              <div class="ec-ai-dl">
+                <div class="dl-badge xl" onclick="toast('📊 Téléchargement Excel…')">📊 .xlsx</div>
+                <div class="dl-badge dc" onclick="toast('📝 Téléchargement Word…')">📝 .docx</div>
+              </div>
+            </div>
+            <div class="ec-account-item">
+              <div class="ec-ai-ico">🧅</div>
+              <div class="ec-ai-info"><h4>Oignon · Zio-Centre</h4><p>Acheté le 02/07/2025 · FENOMAT</p></div>
+              <div class="ec-ai-dl">
+                <div class="dl-badge xl" onclick="toast('📊 Téléchargement Excel…')">📊 .xlsx</div>
+                <div class="dl-badge dc" onclick="toast('📝 Téléchargement Word…')">📝 .docx</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;margin-top:16px;" onclick="wTab('boutique',null)">+ Acheter un nouveau pack</button>
+        </div>
+      </div>
+
+      <!-- Widget footer -->
+      <div class="w-foot">
+        <div class="w-foot-left">🔒 Paiement sécurisé FedaPay · Livraison immédiate</div>
+        <div class="w-foot-right">Propulsé par <b>FedeActiva</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODALS ──────────────────────────── -->
+<div class="overlay" id="overlay-new-fed">
+  <div class="modal-box">
+    <h3>Nouvelle Fédération</h3>
+    <p class="mb-sub">Créer un nouveau tenant · Multi-tenant par federation_id</p>
+    <div class="fg"><label class="fl">Nom complet</label><input class="fc" placeholder="ex: Fédération Nationale des Éleveurs du Togo"></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Slug (URL)</label><input class="fc" placeholder="ex: fenet"></div>
+      <div class="fg"><label class="fl">Commission %</label><input class="fc" value="10" type="number"></div>
+    </div>
+    <div class="fg"><label class="fl">Domaines widget autorisés</label><input class="fc" placeholder="fenet.tg, www.fenet.tg"></div>
+    <div class="fg"><label class="fl">Email administrateur</label><input class="fc" placeholder="admin@fenet.tg"></div>
+    <div class="modal-foot">
+      <button class="btn btn-pale" onclick="closeModals()">Annuler</button>
+      <button class="btn btn-verdant" onclick="closeModals();toast('🏛️ Fédération FENET créée ! Slug: fenet · API key générée')">Créer la fédération</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-preview-doc">
+  <div class="modal-box doc-preview-modal">
+    <h3>Aperçu du pack documentaire</h3>
+    <p class="mb-sub">Pack Tomate · Golfe-Béatrice · Généré pour Koffi AMETSITSI</p>
+    <div class="g2" style="margin-bottom:0;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--mist);text-transform:uppercase;margin-bottom:8px;">📊 Excel – Budget prévisionnel</div>
+        <div class="doc-preview">
+          <div class="doc-toolbar"><span class="doc-toolbar-name">budget_tomate_golfe.xlsx</span><div class="doc-toolbar-actions"><button onclick="toast('⬇ Excel DL')">⬇</button></div></div>
+          <div class="doc-content" style="max-height:180px;">
+            <table class="doc-table"><thead><tr><th>Charge</th><th>Qté</th><th>Prix</th><th>Total</th></tr></thead><tbody>
+              <tr><td>Semences F1</td><td>50g</td><td>4 500</td><td>4 500</td></tr>
+              <tr><td>NPK 15-15-15</td><td>50kg</td><td>450</td><td>22 500</td></tr>
+              <tr><td>Main-d'œuvre</td><td>25j</td><td>2 000</td><td>50 000</td></tr>
+              <tr style="font-weight:700;background:#e8f5e9;"><td colspan="3">CHARGES TOTALES</td><td>110 000</td></tr>
+              <tr style="font-weight:700;background:#c8e6c9;"><td colspan="3">CA ESTIMÉ</td><td>210 000</td></tr>
+              <tr style="font-weight:800;background:#a5d6a7;color:#1b5e20;"><td colspan="3">MARGE NETTE</td><td>100 000</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--mist);text-transform:uppercase;margin-bottom:8px;">📝 Word – Itinéraire technique</div>
+        <div class="doc-preview">
+          <div class="doc-toolbar word"><span class="doc-toolbar-name">itineraire_tomate_golfe.docx</span><div class="doc-toolbar-actions"><button onclick="toast('⬇ Word DL')">⬇</button></div></div>
+          <div class="doc-content" style="max-height:180px;">
+            <table class="doc-table word-table"><thead><tr><th>Phase</th><th>Opération</th><th>Période</th></tr></thead><tbody>
+              <tr><td>Préparation</td><td>Labour & billonnage</td><td>J-21</td></tr>
+              <tr><td>Pépinière</td><td>Semis caissettes</td><td>J-21</td></tr>
+              <tr><td>Repiquage</td><td>Mise en place plants</td><td>J0</td></tr>
+              <tr><td>Fertilisation</td><td>Apport NPK fond</td><td>J+7</td></tr>
+              <tr><td><strong>Récolte</strong></td><td><strong>Cueillette progressive</strong></td><td><strong>J+70→90</strong></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-pale" onclick="closeModals()">Fermer</button>
+      <button class="btn btn-verdant" onclick="closeModals();toast('✅ Pack validé et publié')">Valider ce pack</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast-el">
+  <span class="ti">✅</span>
+  <span id="toast-txt"></span>
+</div>
+
+<script>
+// ── View switcher ──
+function switchView(id, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.npill').forEach(p => p.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── SA pages ──
+function saPage(id, el) {
+  document.querySelectorAll('[id^="sa-"]').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.sa-rail .rail-link').forEach(l => l.classList.remove('active'));
+  const el2 = document.getElementById('sa-' + id);
+  if (el2) el2.style.display = 'block';
+  if (el) el.classList.add('active');
+}
+
+// ── AF pages ──
+function afPage(id, el) {
+  document.querySelectorAll('[id^="af-"]').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.af-rail .rail-link').forEach(l => l.classList.remove('active'));
+  const el2 = document.getElementById(id);
+  if (el2) el2.style.display = 'block';
+  if (el) el.classList.add('active');
+}
+
+// ── Widget tab ──
+function wTab(tab, el) {
+  document.getElementById('w-boutique').style.display = 'none';
+  document.getElementById('w-client').style.display = 'none';
+  document.querySelectorAll('.w-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('w-' + tab).style.display = 'block';
+  if (el) el.classList.add('active');
+  else {
+    const tabs = document.querySelectorAll('.w-tab');
+    if (tab === 'boutique') tabs[0].classList.add('active');
+    if (tab === 'client') tabs[1].classList.add('active');
+  }
+}
+
+// ── Widget steps ──
+function wStep(step) {
+  ['choose','form','payment','success'].forEach(s => {
+    document.getElementById('ws-' + s).style.display = 'none';
+  });
+  document.getElementById('ws-' + step).style.display = 'block';
+}
+
+// ── Select pack ──
+let selPack = null;
+function selectPack(el, name, ico, zone) {
+  document.querySelectorAll('.pcc').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  selPack = { name, ico, zone };
+  const btn = document.getElementById('btn-pack-next');
+  btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
+  btn.textContent = `Continuer avec le Pack ${name} →`;
+  document.getElementById('sp-ico').textContent = ico;
+  document.getElementById('sp-name').textContent = 'Pack ' + name;
+  document.getElementById('sp-zone').textContent = '📍 ' + zone;
+  document.getElementById('pr-ico').textContent = ico;
+  document.getElementById('pr-name').textContent = 'Pack ' + name + ' · ' + zone;
+  document.getElementById('dl-xl-name').textContent = `Budget_${name}_${zone.replace('-','_')}_AMETSITSI.xlsx`;
+  document.getElementById('dl-dc-name').textContent = `Itineraire_${name}_${zone.replace('-','_')}_AMETSITSI.docx`;
+}
+
+// ── Select pay ──
+function selectPay(el) {
+  document.querySelectorAll('.pay-opt').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ── Do payment simulation ──
+function doPayment() {
+  toast('⏳ Connexion à FedaPay en cours…');
+  setTimeout(() => toast('🔄 Redirection paiement Orange Money…'), 1000);
+  setTimeout(() => { toast('✅ Paiement confirmé ! Génération Excel + Word…'); }, 2200);
+  setTimeout(() => { toast('📱 SMS envoyé avec liens de téléchargement'); wStep('success'); }, 3500);
+}
+
+// ── Espace client ──
+function showClientLoggedIn() {
+  document.getElementById('ec-out').style.display = 'none';
+  document.getElementById('ec-in').style.display = 'block';
+  const n = selPack ? selPack.name : 'Tomate';
+  const z = selPack ? selPack.zone : 'Golfe-Béatrice';
+  const i = selPack ? selPack.ico : '🍅';
+  const list = document.getElementById('ec-list');
+  if (selPack) {
+    const item = document.createElement('div');
+    item.className = 'ec-account-item';
+    item.style.borderColor = 'var(--sage)';
+    item.innerHTML = `<div class="ec-ai-ico">${i}</div><div class="ec-ai-info"><h4>${n} · ${z}</h4><p>Acheté à l'instant · FENOMAT</p></div><div class="ec-ai-dl"><div class="dl-badge xl" onclick="toast('📊 Excel DL…')">📊 .xlsx</div><div class="dl-badge dc" onclick="toast('📝 Word DL…')">📝 .docx</div></div>`;
+    list.prepend(item);
+  }
+  wTab('client', null);
+}
+function logoutClient() {
+  document.getElementById('ec-out').style.display = 'block';
+  document.getElementById('ec-in').style.display = 'none';
+}
+
+// ── Modals ──
+function openModal(id) {
+  document.getElementById('overlay-' + id).classList.add('open');
+}
+function closeModals() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.remove('open'));
+}
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closeModals(); });
+});
+
+// ── Toast ──
+let toastTimer;
+function toast(msg) {
+  clearTimeout(toastTimer);
+  const el = document.getElementById('toast-el');
+  document.getElementById('toast-txt').textContent = msg;
+  el.classList.add('on');
+  toastTimer = setTimeout(() => el.classList.remove('on'), 3200);
+}
+</script>
+</body>
+</html>

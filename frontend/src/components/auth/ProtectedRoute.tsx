@@ -30,7 +30,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     // User doesn't have required role, redirect to appropriate page
     if (user.role === 'super_admin') {
       return <Navigate to="/super-admin" replace />;
-    } else if (user.role === 'federation_admin') {
+    } else if (user.role === 'admin_federation') {
       return <Navigate to="/federation-admin" replace />;
     } else {
       return <Navigate to="/" replace />;

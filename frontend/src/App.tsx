@@ -61,7 +61,7 @@ function App() {
               <Route
                 path="/federation-admin"
                 element={
-                  <ProtectedRoute allowedRoles={['federation_admin', 'super_admin']}>
+                  <ProtectedRoute allowedRoles={['admin_federation', 'super_admin']}>
                     <Layout>
                       <FederationAdminDashboard />
                     </Layout>

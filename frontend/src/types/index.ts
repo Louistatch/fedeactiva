@@ -74,7 +74,7 @@ export interface User {
   updated_at: Date;
 }
 
-export type UserRole = 'super_admin' | 'federation_admin' | 'producer';
+export type UserRole = 'super_admin' | 'admin_federation' | 'producteur';
 
 export interface Order {
   id: string;

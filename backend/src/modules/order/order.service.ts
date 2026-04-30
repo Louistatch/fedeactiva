@@ -71,20 +71,38 @@ export class OrderService {
     });
   }
 
-  async findByUtilisateur(utilisateurId: string): Promise<Commande[]> {
-    return this.commandeRepo.find({
+  async findByUtilisateur(utilisateurId: string, page: number = 1, limit: number = 20): Promise<{ data: Commande[], total: number, page: number, totalPages: number }> {
+    const [data, total] = await this.commandeRepo.findAndCount({
       where: { utilisateurId, statut: CommandeStatut.CONFIRMEE },
       relations: ['lignes', 'lignes.pack', 'lignes.pack.culture'],
       order: { dateCommande: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
-  async findByFederation(federationId: string): Promise<Commande[]> {
-    return this.commandeRepo.find({
+  async findByFederation(federationId: string, page: number = 1, limit: number = 50): Promise<{ data: Commande[], total: number, page: number, totalPages: number }> {
+    const [data, total] = await this.commandeRepo.findAndCount({
       where: { federationId },
       relations: ['lignes', 'lignes.pack', 'lignes.pack.culture', 'utilisateur'],
       order: { dateCommande: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async confirm(id: string, transactionId: string, method: string): Promise<Commande> {

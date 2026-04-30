@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { PackService } from './pack.service';
 import { CreatePackDto } from './dto/pack.dto';
 
@@ -15,15 +15,27 @@ export class PackController {
   }
 
   @Get('federation/:federationId')
-  @ApiOperation({ summary: 'Liste des packs par federation' })
-  findAll(@Param('federationId') federationId: string) {
-    return this.packService.findAll(federationId);
+  @ApiOperation({ summary: 'Liste des packs par federation (paginée)' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 50 })
+  findAll(
+    @Param('federationId') federationId: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
+  ) {
+    return this.packService.findAll(federationId, page, limit);
   }
 
   @Get('federation/:federationId/published')
-  @ApiOperation({ summary: 'Packs publiés (public)' })
-  findAllPublished(@Param('federationId') federationId: string) {
-    return this.packService.findAllPublished(federationId);
+  @ApiOperation({ summary: 'Packs publiés (public, paginée)' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 50 })
+  findAllPublished(
+    @Param('federationId') federationId: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
+  ) {
+    return this.packService.findAllPublished(federationId, page, limit);
   }
 
   @Get('slug/:slug/culture/:cultureId/canton/:cantonId')

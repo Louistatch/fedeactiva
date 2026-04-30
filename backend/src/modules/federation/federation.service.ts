@@ -23,10 +23,19 @@ export class FederationService {
     return this.federationRepo.save(federation);
   }
 
-  async findAll(): Promise<Federation[]> {
-    return this.federationRepo.find({
+  async findAll(page: number = 1, limit: number = 20): Promise<{ data: Federation[], total: number, page: number, totalPages: number }> {
+    const [data, total] = await this.federationRepo.findAndCount({
       order: { nom: 'ASC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string): Promise<Federation> {

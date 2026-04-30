@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { FederationService } from './federation.service';
 import { CreateFederationDto, UpdateFederationDto } from './dto/federation.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -22,9 +22,14 @@ export class FederationController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Liste des fédérations' })
-  findAll() {
-    return this.federationService.findAll();
+  @ApiOperation({ summary: 'Liste des fédérations (paginée)' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+  ) {
+    return this.federationService.findAll(page, limit);
   }
 
   @Get('stats')

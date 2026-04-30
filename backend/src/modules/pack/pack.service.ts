@@ -23,20 +23,38 @@ export class PackService {
     return this.packRepo.save(pack);
   }
 
-  async findAll(federationId: string): Promise<Pack[]> {
-    return this.packRepo.find({
+  async findAll(federationId: string, page: number = 1, limit: number = 50): Promise<{ data: Pack[], total: number, page: number, totalPages: number }> {
+    const [data, total] = await this.packRepo.findAndCount({
       where: { federationId },
       relations: ['culture', 'modeleExcel', 'modeleWord'],
       order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
-  async findAllPublished(federationId: string): Promise<Pack[]> {
-    return this.packRepo.find({
+  async findAllPublished(federationId: string, page: number = 1, limit: number = 50): Promise<{ data: Pack[], total: number, page: number, totalPages: number }> {
+    const [data, total] = await this.packRepo.findAndCount({
       where: { federationId, statut: PackStatut.PUBLIE },
       relations: ['culture'],
       order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string): Promise<Pack> {

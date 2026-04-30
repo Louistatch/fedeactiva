@@ -1,67 +1,72 @@
-// Vercel Serverless Function for NestJS
+// Vercel Serverless Function for NestJS - OPTIMIZED
 const express = require('express');
+const { NestFactory } = require('@nestjs/core');
 
-// Simple Express fallback - NestJS is too heavy for serverless
-const app = express();
+// Cache global de l'app NestJS
+let cachedApp = null;
+let isInitializing = false;
 
-app.use(express.json());
+async function getOrCreateApp() {
+  // Si l'app existe déjà, la retourner immédiatement
+  if (cachedApp) {
+    return cachedApp;
+  }
 
-// CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  next();
-});
+  // Si une initialisation est en cours, attendre
+  if (isInitializing) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return getOrCreateApp();
+  }
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    message: 'FedeActiva API is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'production'
-  });
-});
+  isInitializing = true;
 
-app.get('/api', (req, res) => {
-  res.json({
-    name: 'FedeActiva API',
-    version: '2.0.0',
-    status: 'running',
-    endpoints: {
-      health: '/api/health',
-      auth: '/api/auth/*',
-      docs: 'https://github.com/Louistatch/fedeactiva'
-    }
-  });
-});
+  try {
+    // Import dynamique pour réduire le cold start
+    const { AppModule } = require('../dist/app.module');
+    
+    // Créer l'app NestJS avec options optimisées
+    const app = await NestFactory.create(AppModule, {
+      logger: false, // Désactiver les logs pour accélérer
+      abortOnError: false,
+    });
 
-// Auth endpoints placeholder
-app.post('/api/auth/login', (req, res) => {
-  res.status(501).json({
-    statusCode: 501,
-    message: 'Auth endpoints not yet implemented in serverless mode',
-    suggestion: 'Use Railway or Render for full NestJS deployment'
-  });
-});
+    // CORS minimal
+    app.enableCors({
+      origin: '*',
+      credentials: true,
+    });
 
-app.post('/api/auth/register', (req, res) => {
-  res.status(501).json({
-    statusCode: 501,
-    message: 'Auth endpoints not yet implemented in serverless mode',
-    suggestion: 'Use Railway or Render for full NestJS deployment'
-  });
-});
+    // Pas de global prefix pour réduire la latence
+    // app.setGlobalPrefix('api/v1');
 
-// Catch all
-app.all('*', (req, res) => {
-  res.status(404).json({
-    statusCode: 404,
-    message: `Route ${req.method} ${req.path} not found`,
-    availableRoutes: ['/api', '/api/health', '/api/auth/login', '/api/auth/register']
-  });
-});
+    await app.init();
+    
+    cachedApp = app;
+    console.log('✅ NestJS app cached');
+    
+    return app;
+  } catch (error) {
+    console.error('❌ Failed to initialize NestJS:', error.message);
+    throw error;
+  } finally {
+    isInitializing = false;
+  }
+}
 
-module.exports = app;
+// Export du handler Vercel
+module.exports = async (req, res) => {
+  try {
+    const app = await getOrCreateApp();
+    const server = app.getHttpAdapter().getInstance();
+    
+    // Passer la requête à Express/NestJS
+    server(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};

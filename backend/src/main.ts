@@ -25,7 +25,7 @@ async function bootstrap() {
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Federation-Slug'],
     },
-    logger: createLogger(),
+    logger: process.env.VERCEL ? false : createLogger(), // Pas de logger sur Vercel
   });
 
   // Sécurité HTTP
@@ -50,25 +50,27 @@ async function bootstrap() {
   // Prefix API
   app.setGlobalPrefix('api/v1');
 
-  // Swagger Documentation
-  const config = new DocumentBuilder()
-    .setTitle('FedeActiva API')
-    .setDescription('API Multi-tenant pour plateforme de packs documentaires agricoles')
-    .setVersion('2.0.0')
-    .addBearerAuth()
-    .addTag('Auth', 'Authentification')
-    .addTag('Federations', 'Gestion des fédérations')
-    .addTag('Cultures', 'Cultures agricoles')
-    .addTag('Cantons', 'Découpage géographique')
-    .addTag('Packs', 'Packs documentaires')
-    .addTag('Orders', 'Commandes')
-    .addTag('Payment', 'Paiements FedaPay')
-    .addTag('Documents', 'Génération de documents')
-    .addTag('Users', 'Utilisateurs')
-    .build();
+  // Swagger Documentation (uniquement en développement)
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('FedeActiva API')
+      .setDescription('API Multi-tenant pour plateforme de packs documentaires agricoles')
+      .setVersion('2.0.0')
+      .addBearerAuth()
+      .addTag('Auth', 'Authentification')
+      .addTag('Federations', 'Gestion des fédérations')
+      .addTag('Cultures', 'Cultures agricoles')
+      .addTag('Cantons', 'Découpage géographique')
+      .addTag('Packs', 'Packs documentaires')
+      .addTag('Orders', 'Commandes')
+      .addTag('Payment', 'Paiements FedaPay')
+      .addTag('Documents', 'Génération de documents')
+      .addTag('Users', 'Utilisateurs')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

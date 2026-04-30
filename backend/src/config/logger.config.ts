@@ -18,16 +18,20 @@ const consoleFormat = winston.format.combine(
 );
 
 export const createLogger = () => {
-  const transports: winston.transport[] = [
-    // Console transport
-    new winston.transports.Console({
-      format: consoleFormat,
-      level: process.env.LOG_LEVEL || 'info',
-    }),
-  ];
+  const transports: winston.transport[] = [];
 
-  // File transports only in production
-  if (process.env.NODE_ENV === 'production') {
+  // Console uniquement en développement ou si pas serverless
+  if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    transports.push(
+      new winston.transports.Console({
+        format: consoleFormat,
+        level: process.env.LOG_LEVEL || 'info',
+      }),
+    );
+  }
+
+  // File transports seulement si pas serverless
+  if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
     // Error logs
     transports.push(
       new DailyRotateFile({
@@ -54,12 +58,22 @@ export const createLogger = () => {
     );
   }
 
+  // Si aucun transport (serverless production), utiliser console simple
+  if (transports.length === 0) {
+    transports.push(
+      new winston.transports.Console({
+        format: winston.format.simple(),
+        level: 'error', // Seulement les erreurs
+      }),
+    );
+  }
+
   return WinstonModule.createLogger({
     transports,
-    exceptionHandlers: [
+    exceptionHandlers: process.env.VERCEL ? [] : [
       new winston.transports.File({ filename: 'logs/exceptions.log' }),
     ],
-    rejectionHandlers: [
+    rejectionHandlers: process.env.VERCEL ? [] : [
       new winston.transports.File({ filename: 'logs/rejections.log' }),
     ],
   });

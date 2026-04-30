@@ -24,10 +24,11 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      cache: true, // Cache la config
     }),
     ThrottlerModule.forRoot([{
-      ttl: parseInt(process.env.THROTTLE_TTL || '60') * 1000, // 60 secondes
-      limit: parseInt(process.env.THROTTLE_LIMIT || '10'), // 10 requêtes max
+      ttl: parseInt(process.env.THROTTLE_TTL || '60') * 1000,
+      limit: parseInt(process.env.THROTTLE_LIMIT || '10'),
     }]),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -37,12 +38,16 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_DATABASE || 'fedeactiva',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV !== 'production',
-      logging: process.env.NODE_ENV === 'development',
+      synchronize: false, // Toujours false en production
+      logging: false, // Désactiver les logs SQL
       ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+      poolSize: 5, // Réduire le pool de connexions
+      connectTimeoutMS: 10000,
       extra: {
-        // Force IPv4
         family: 4,
+        max: 5, // Max 5 connexions
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
       },
     }),
     CommonModule,

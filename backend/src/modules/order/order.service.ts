@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Commande, CommandeStatut } from './entities/commande.entity';
 import { CommandeLigne } from './entities/commande-ligne.entity';
 import { Pack } from '../pack/entities/pack.entity';
@@ -15,33 +15,42 @@ export class OrderService {
     private ligneRepo: Repository<CommandeLigne>,
     @InjectRepository(Pack)
     private packRepo: Repository<Pack>,
+    @InjectDataSource()
+    private dataSource: DataSource,
   ) {}
 
   async create(federationId: string, utilisateurId: string, dto: CreateOrderDto): Promise<Commande> {
-    // Get pack info
-    const pack = await this.packRepo.findOne({ where: { id: dto.packId } });
-    if (!pack) {
-      throw new NotFoundException('Pack non trouvé');
-    }
+    return this.dataSource.transaction(async (manager) => {
+      // Get pack info
+      const pack = await manager.findOne(Pack, { where: { id: dto.packId } });
+      if (!pack) {
+        throw new NotFoundException('Pack non trouvé');
+      }
 
-    // Create commande
-    const commande = this.commandeRepo.create({
-      federationId,
-      utilisateurId,
-      montantTotal: pack.prixUnitaire * (dto.quantite || 1),
+      // Check stock
+      if (pack.stockDisponible < (dto.quantite || 1)) {
+        throw new Error(`Stock insuffisant. Disponible: ${pack.stockDisponible}, Demandé: ${dto.quantite || 1}`);
+      }
+
+      // Create commande
+      const commande = manager.create(Commande, {
+        federationId,
+        utilisateurId,
+        montantTotal: pack.prixUnitaire * (dto.quantite || 1),
+      });
+      await manager.save(commande);
+
+      // Create ligne
+      const ligne = manager.create(CommandeLigne, {
+        commandeId: commande.id,
+        packId: pack.id,
+        quantite: dto.quantite || 1,
+        prixUnitaire: pack.prixUnitaire,
+      });
+      await manager.save(ligne);
+
+      return this.findOne(commande.id);
     });
-    await this.commandeRepo.save(commande);
-
-    // Create ligne
-    const ligne = this.ligneRepo.create({
-      commandeId: commande.id,
-      packId: pack.id,
-      quantite: dto.quantite || 1,
-      prixUnitaire: pack.prixUnitaire,
-    });
-    await this.ligneRepo.save(ligne);
-
-    return this.findOne(commande.id);
   }
 
   async findOne(id: string): Promise<Commande> {
@@ -79,27 +88,34 @@ export class OrderService {
   }
 
   async confirm(id: string, transactionId: string, method: string): Promise<Commande> {
-    const commande = await this.findOne(id);
-    commande.statut = CommandeStatut.CONFIRMEE;
-    commande.transactionId = transactionId;
-    commande.methodePaiement = method;
-    commande.datePaiement = new Date();
-    await this.commandeRepo.save(commande);
+    return this.dataSource.transaction(async (manager) => {
+      const commande = await this.findOne(id);
+      commande.statut = CommandeStatut.CONFIRMEE;
+      commande.transactionId = transactionId;
+      commande.methodePaiement = method;
+      commande.datePaiement = new Date();
+      await manager.save(commande);
 
-    // Decrement stock
-    for (const ligne of commande.lignes) {
-      await this.packRepo
-        .createQueryBuilder()
-        .update()
-        .set({ 
-          stockDisponible: () => 'stock_disponible - 1',
-          nombreVentes: () => 'nombre_ventes + 1',
-        })
-        .where('id = :id', { id: ligne.packId })
-        .execute();
-    }
+      // Decrement stock for each line
+      for (const ligne of commande.lignes) {
+        const result = await manager
+          .createQueryBuilder()
+          .update(Pack)
+          .set({ 
+            stockDisponible: () => `stock_disponible - ${ligne.quantite}`,
+            nombreVentes: () => `nombre_ventes + ${ligne.quantite}`,
+          })
+          .where('id = :id', { id: ligne.packId })
+          .andWhere('stock_disponible >= :qty', { qty: ligne.quantite })
+          .execute();
 
-    return commande;
+        if (result.affected === 0) {
+          throw new Error(`Stock insuffisant pour le pack ${ligne.packId}`);
+        }
+      }
+
+      return commande;
+    });
   }
 
   async fail(id: string): Promise<Commande> {

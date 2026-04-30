@@ -80,8 +80,12 @@ export class PaymentService {
     await this.webhookLogRepo.save(log);
 
     try {
-      // Validate signature (in production)
-      // const isValid = this.validateSignature(payload, signature);
+      // Validate signature
+      const isValid = this.validateSignature(payload, signature);
+      
+      if (!isValid) {
+        throw new Error('Invalid webhook signature');
+      }
 
       if (payload.event === 'transaction.completed') {
         if (payload.data.status === 'approved') {
@@ -147,9 +151,24 @@ export class PaymentService {
   }
 
   private validateSignature(payload: any, signature: string): boolean {
-    // In production, validate HMAC signature
     const secret = process.env.FEDAPAY_WEBHOOK_SECRET;
-    // Implement signature validation
-    return true;
+    
+    if (!secret) {
+      this.logger.warn('FEDAPAY_WEBHOOK_SECRET not configured - skipping validation');
+      return process.env.NODE_ENV !== 'production'; // Fail in production
+    }
+
+    try {
+      const crypto = require('crypto');
+      const hmac = crypto
+        .createHmac('sha256', secret)
+        .update(JSON.stringify(payload))
+        .digest('hex');
+      
+      return hmac === signature;
+    } catch (error) {
+      this.logger.error(`Signature validation error: ${error.message}`);
+      return false;
+    }
   }
 }

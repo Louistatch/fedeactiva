@@ -32,22 +32,25 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
     }]),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432'),
-      username: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_DATABASE || 'fedeactiva',
+      // Utiliser l'URL complète si disponible, sinon les paramètres individuels
+      url: process.env.DATABASE_URL || undefined,
+      host: process.env.DATABASE_URL ? undefined : (process.env.DB_HOST || 'localhost'),
+      port: process.env.DATABASE_URL ? undefined : parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DATABASE_URL ? undefined : (process.env.DB_USERNAME || 'postgres'),
+      password: process.env.DATABASE_URL ? undefined : (process.env.DB_PASSWORD || 'postgres'),
+      database: process.env.DATABASE_URL ? undefined : (process.env.DB_DATABASE || 'fedeactiva'),
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false, // Toujours false en production
-      logging: false, // Désactiver les logs SQL
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-      poolSize: 5, // Réduire le pool de connexions
-      connectTimeoutMS: 10000,
+      synchronize: false,
+      logging: false,
+      ssl: { rejectUnauthorized: false }, // Toujours SSL pour Supabase
+      poolSize: 5,
+      connectTimeoutMS: 15000,
       extra: {
-        family: 4,
-        max: 5, // Max 5 connexions
+        family: 4, // Force IPv4
+        max: 5,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 10000,
+        connectionTimeoutMillis: 15000,
+        ssl: { rejectUnauthorized: false },
       },
     }),
     CommonModule,

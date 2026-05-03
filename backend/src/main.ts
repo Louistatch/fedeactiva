@@ -6,17 +6,12 @@ import { createLogger } from './config/logger.config';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  // Validate CORS origins in production
   const corsOrigins = process.env.CORS_ORIGINS?.split(',').map(o => o.trim()) || [];
-  
-  if (process.env.NODE_ENV === 'production' && corsOrigins.length === 0) {
-    throw new Error('CORS_ORIGINS must be defined in production');
-  }
 
-  // Default to localhost only in development
-  const allowedOrigins = corsOrigins.length > 0 
-    ? corsOrigins 
-    : ['http://localhost:3000', 'http://localhost:5173'];
+  // En monorepo (même domaine), CORS_ORIGINS n'est pas obligatoire
+  const allowedOrigins = corsOrigins.length > 0
+    ? corsOrigins
+    : ['http://localhost:3000', 'http://localhost:5173', '*'];
 
   const app = await NestFactory.create(AppModule, {
     cors: {

@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "name": "fedeactiva",
+  "buildCommand": "cd backend && npm install && npm run build && cd ../frontend && npm install && npm run build",
+  "builds": [
+    {
+      "src": "backend/api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["backend/dist/**", "backend/node_modules/**"]
+      }
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "frontend/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/backend/api/index.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/backend/api/index.js"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
+    }
+  ],
+  "functions": {
+    "backend/api/index.js": {
+      "memory": 3008,
+      "maxDuration": 30,
+      "runtime": "nodejs20.x"
+    }
+  }
+}

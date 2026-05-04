@@ -46,8 +46,10 @@ export default function Register() {
 
     if (!formData.password) {
       newErrors.password = 'Le mot de passe est requis';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Le mot de passe doit contenir au moins 8 caractères';
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      newErrors.password = 'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre';
     }
 
     if (!formData.confirmPassword) {
@@ -81,10 +83,11 @@ export default function Register() {
       navigate('/');
     } catch (error: any) {
       console.error('Registration error:', error);
-      setGeneralError(
-        error.response?.data?.message || 
-        'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.'
-      );
+      const backendMessage = error.response?.data?.message;
+      const errorMsg = Array.isArray(backendMessage)
+        ? backendMessage.join(', ')
+        : backendMessage || 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.';
+      setGeneralError(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -195,11 +198,11 @@ export default function Register() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Au moins 6 caractères"
+              placeholder="Min. 8 car. avec majuscule, minuscule et chiffre"
               className={errors.password ? 'error' : ''}
               disabled={isLoading}
               autoComplete="new-password"
-              minLength={6}
+              minLength={8}
               required
             />
             {errors.password && <span className="error-message">{errors.password}</span>}

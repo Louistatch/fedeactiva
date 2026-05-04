@@ -13,7 +13,18 @@ import type {
   FederationStats,
 } from '../types';
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api/v1';
+// Détecte automatiquement l'URL selon l'environnement
+const getApiUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  if (envUrl && !envUrl.includes('TON-BACKEND')) return envUrl;
+  // En production sur Vercel, utilise le même domaine
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return `${window.location.origin}/api/v1`;
+  }
+  return 'http://localhost:3000/api/v1';
+};
+
+const API_BASE_URL = getApiUrl();
 
 class ApiService {
   private api: AxiosInstance;

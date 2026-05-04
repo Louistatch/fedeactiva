@@ -18,39 +18,51 @@ import { CommonModule } from './modules/common/common.module';
 import { TenantMiddleware } from './modules/common/middlewares/tenant.middleware';
 import { AuditModule } from './modules/common/audit/audit.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import * as dns from 'dns';
+
+// Force IPv4 pour toutes les résolutions DNS (fix Railway + Supabase)
+dns.setDefaultResultOrder('ipv4first');
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      cache: true, // Cache la config
+      cache: true,
     }),
     ThrottlerModule.forRoot([{
       ttl: parseInt(process.env.THROTTLE_TTL || '60') * 1000,
       limit: parseInt(process.env.THROTTLE_LIMIT || '10'),
     }]),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      // Utiliser l'URL complète si disponible, sinon les paramètres individuels
-      url: process.env.DATABASE_URL || undefined,
-      host: process.env.DATABASE_URL ? undefined : (process.env.DB_HOST || 'localhost'),
-      port: process.env.DATABASE_URL ? undefined : parseInt(process.env.DB_PORT || '5432'),
-      username: process.env.DATABASE_URL ? undefined : (process.env.DB_USERNAME || 'postgres'),
-      password: process.env.DATABASE_URL ? undefined : (process.env.DB_PASSWORD || 'postgres'),
-      database: process.env.DATABASE_URL ? undefined : (process.env.DB_DATABASE || 'fedeactiva'),
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
-      logging: false,
-      ssl: { rejectUnauthorized: false }, // Toujours SSL pour Supabase
-      poolSize: 5,
-      connectTimeoutMS: 15000,
-      extra: {
-        family: 4, // Force IPv4
-        max: 5,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 15000,
-        ssl: { rejectUnauthorized: false },
+    TypeOrmModule.forRootAsync({
+      useFactory: () => {
+        const databaseUrl = process.env.DATABASE_URL;
+        const useSSL = process.env.DB_SSL === 'true' || 
+                       (databaseUrl && databaseUrl.includes('supabase'));
+
+        return {
+          type: 'postgres',
+          url: databaseUrl,
+          host: databaseUrl ? undefined : (process.env.DB_HOST || 'localhost'),
+          port: databaseUrl ? undefined : parseInt(process.env.DB_PORT || '5432'),
+          username: databaseUrl ? undefined : (process.env.DB_USERNAME || 'postgres'),
+          password: databaseUrl ? undefined : (process.env.DB_PASSWORD || 'postgres'),
+          database: databaseUrl ? undefined : (process.env.DB_DATABASE || 'fedeactiva'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: process.env.DB_SYNC === 'true',
+          logging: false,
+          ssl: useSSL ? { rejectUnauthorized: false } : false,
+          poolSize: 3,
+          connectTimeoutMS: 20000,
+          extra: {
+            max: 3,
+            min: 1,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 20000,
+            // SSL dans extra aussi pour le driver pg
+            ssl: useSSL ? { rejectUnauthorized: false } : false,
+          },
+        };
       },
     }),
     CommonModule,

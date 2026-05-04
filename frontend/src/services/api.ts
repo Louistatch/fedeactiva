@@ -13,7 +13,7 @@ import type {
   FederationStats,
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.fedeactiva.tg';
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api/v1';
 
 class ApiService {
   private api: AxiosInstance;
@@ -21,7 +21,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: `${API_BASE_URL}/api/v1`,
+      baseURL: API_BASE_URL,
       headers: {
         'Content-Type': 'application/json',
       },
